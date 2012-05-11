@@ -12,7 +12,7 @@ Install meteor and packages:
     meteor add coffeescript
     meteor add jquery
 
-Install node (download from http://nodejs.com) and request package:
+Install node (download from http://nodejs.org) and request package:
     
     npm install request
 
