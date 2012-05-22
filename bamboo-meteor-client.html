@@ -1,29 +1,28 @@
 <head>
   <title>summarizr on meteor</title>
-    <script src="client/polychart.standalone.0.0.2.min.js"></script>
   
 </head>
 
 <body>
     <div class="container-fluid" style="margin-top:50px">
         <div class="navbar navbar-fixed-top">
-        {{> navbar}}
+            {{> navbar}}
         </div>
     </div>
     <div class="row">
     </div>
     <div class="span3">
-  {{> sidebar}}
+        {{> sidebar}}
     </div>
     <div class="span9">
-  {{> maincontent}}
+        {{> maincontent}}
     </div>
 </body>
 
 <template name="navbar">
     <div class="navbar-inner">
                     <div class="container">
-                        <a class="brand" href="#">Summarizr client for bamboo ({{foo}})</a>
+                        <a class="brand" href="#">Summarizr client for bamboo</a>
                         <div class="pull-right">
                             <input id="datasource-url" type="text" name="url" size="100" value="http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv"/>
                             <button class="btn" id="datasource-change-button" > Change </button>
@@ -33,23 +32,43 @@
 </template>
 
 <template name="sidebar">
+    <!--
     Group by: 
-            <select id="grouping-select"> </select> <br/>
+            <select id="grouping-select" multiple="multiple"> </select> <br/>
+    -->
 
-    Histograms to show:
+    Histograms!
             
             <select id="histogram-select" multiple="multiple" style="height:300px;"> </select> <br/>
+    <!--
             
     Side-by-side:
             <input type="checkbox" name="side-by-side" id="side-by-side" value="yes"> </input> <br/>
+    -->
 </template>
 
 <template name="maincontent">
+    <div id="column-list">
+        <ul>
+        {{#each columns}}
+            {{> column}}
+        {{/each}}
+        </ul>
+    </div>
     <div id="graphs"  class="container">
         <ul id="tabs" class="nav nav-tabs"></ul>
         <ul id="alt-tabs" class="row-fluid"></ul>
         <div id="content" class="tab-content"></div>
     </div>
-    {{response}}
+</template>
+
+<template name="column">
+<li>
+    <button  data-toggle="collapse" data-target="#{{this}}">{{this}}</button>
+    <div class="collapse" id="{{this}}">
+        Content for {{this}}
+    </div>
+</li>
+
 </template>
 

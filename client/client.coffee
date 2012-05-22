@@ -1,32 +1,39 @@
 root = global ? window
 bambooUrl = "/"
 observationsUrl = bambooUrl + "datasets"
+name_html = "oh hai"
 
 if root.Meteor.is_client
-    root.Template.navbar.foo = ->
-        "Summarize!"
-    root.Template.maincontent.response = "ret is undefined"
+    populate = (u)->
+        dataset = Datasets.find({url: u}).fetch()[0]
+        ida = dataset.id
+        summary = dataset.summary
+        name_list =_(summary["(ALL)"]).pluck("name")
+
+
+    root.Template.maincontent.columns = ->
+        u = "http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv"
+        console.log 'data count: ' + Datasets.find({url:u}).count()
+        if Datasets.find({url:u}).count() > 0
+            summary = Datasets.find({url: u}).fetch()[0].summary
+            name_list =_(summary["(ALL)"]).pluck("name")
+        name_list
 
     root.Template.navbar.events = "click button": ->
-        console.log 'client-side click'
         url = $('#datasource-url').val()
         ###
         #logic: separate cached and uncahced case for 
         #setTimeout beceause it does take time for bamboo
         #to populate the result into the database
         ###
-        populate = ->
-            dataset = Datasets.find({url: url}).fetch()[0]
-            ida = dataset.id
-            summary = dataset.summary
-
         if !(Datasets.find(url:url).count())
             console.log "caching..."
             Meteor.call('register_dataset', url)
-            setTimeout populate, 2000
+            setTimeout populate(url), 2000
         else
             console.log "cahced"
-            populate()
+            populate(url)
+    ###
         
     $tabsUl = $('#tabs')
     $altTabsUl = $('#alt-tabs')
@@ -35,7 +42,6 @@ if root.Meteor.is_client
     $groupingSelect = $('#grouping-select')
     $histogramSelect = $('#histogram-select')
     $datasourceUrl = $('#datasource-url')
-    ###
 
 
     clearPage = () ->
@@ -157,6 +163,7 @@ if root.Meteor.is_client
     $(->
         sampleDataSetUrl = 'http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv'
         loadPage(sampleDataSetUrl)
+        #console.log "hey it's here"
         #make the datasource change button change the whole page
         $('#datasource-change-botton').click(->
             loadPage($datasourceUrl.val())
@@ -164,11 +171,3 @@ if root.Meteor.is_client
     )
         
     ###
-
- 
-
-Meteor.methods(
-    raise_alert: (placeholder)->
-        alert placeholder
-)
-

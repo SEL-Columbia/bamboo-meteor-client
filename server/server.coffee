@@ -55,3 +55,4 @@ Meteor.methods(
         else
             console.log bambooID + " on " + group + " is already logged"
 )
+
