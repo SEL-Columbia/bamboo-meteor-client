@@ -21,14 +21,14 @@
 
 <template name="navbar">
     <div class="navbar-inner">
-                    <div class="container">
-                        <a class="brand" href="#">Summarizr client for bamboo</a>
-                        <div class="pull-right">
-                            <input id="datasource-url" type="text" name="url" size="100" value="http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv"/>
-                            <button class="btn" id="datasource-change-button" > Change </button>
-                        </div>
-                    </div>
-                    </div>
+        <div class="container">
+            <a class="brand" href="#">Summarizr client for bamboo</a>
+            <div class="pull-right">
+                <input id="datasource-url" type="text" name="url" size="100" value="http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv"/>
+                <button class="btn" id="datasource-change-button" > Change </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <template name="sidebar">
@@ -48,7 +48,7 @@
 </template>
 
 <template name="maincontent">
-    <div id="column-list">
+    <div id="column-list" class="accordion">
         <ul>
         {{#each columns}}
             {{> column}}
@@ -63,12 +63,13 @@
 </template>
 
 <template name="column">
-<li>
-    <button  data-toggle="collapse" data-target="#{{this}}">{{this}}</button>
-    <div class="collapse" id="{{this}}">
-        Content for {{this}}
+<div class="accordion-group">
+    <div class="accordion-heading">
+        <a class="accordion-toggle" href="#{{this}}" data-toggle="collapse" data-target="#{{this}}">{{this}}</a>
     </div>
-</li>
+    <div class="accordion-body collapse" id="{{this}}">
+        <div class="gg_graph" id="{{this}}.gg"></div>
+    </div>
+</div>
 
 </template>
-
