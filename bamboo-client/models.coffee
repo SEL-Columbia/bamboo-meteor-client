@@ -1,5 +1,8 @@
+
 Datasets = new Meteor.Collection('datasets')
 Summaries = new Meteor.Collection('summaries')
+Schemas = new Meteor.Collection('schema')
+
 
 ######## UTILS ###########
 makeTitle = (slug) ->

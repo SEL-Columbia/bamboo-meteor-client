@@ -1,0 +1,124 @@
+<head>
+	<meta charset="UTF-8">
+    <title>bamboo meteor client the awesomest of all</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        {{> url_entry}}
+    </div>
+    {{> processing}}
+    {{> body_render}}
+    <div id="d3select"></div>
+</body>
+<template name="body_render">
+{{#if show}}
+    {{> introduction}}
+    <div class="hero-unit span8 offset1">
+        <div class="control">
+            {{> control_panel}}
+        </div>
+        <div class="graphing">
+            {{> graph}}
+        </div>
+    </div>
+{{/if}}
+</template>
+            
+
+<template name="url_entry">
+    {{#if current_dataset_url}}
+    <div class='navbar navbar-fixed-top url'>
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="pull-right">
+                    <input id="dataSourceURL" type="text"
+                            value="{{current_dataset_url}}"></input>
+                    <div class="btn" id="submitURL">
+                        Submit
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{else}} 
+
+    <div class = 'logo_bamboo'>
+    </div>   
+
+    <div class ='url_init span6 offset3'>
+        <input id="dataSourceURL" type="text" value="{{constants.defaultURL}}"></input>
+        <div class="btn" id="submitURL">
+            Submit        
+        </div>
+    </div>
+    {{/if}}    
+</template>
+
+<template name="control_panel">
+    {{#if show}}
+            <div class="page-header">
+                <h3>Control Panel</h3>
+            </div>
+            <div class="row offset1">
+                <b>View</b>
+                {{chosen}}
+                <select class="chosen" id="view">
+                    {{#each fields}}
+                        <option>{{this}}</option>
+                    {{/each}}
+                </select>
+                <b>Group by</b>
+                <select data-placeholder="choose a group" class="chosen" id="group-by">
+                    <option></option>
+                    {{#each groups}}
+                        <option>{{this}}</option>
+                    {{/each}}
+                </select>
+                Generate
+                {{num_graph}}
+                graphs
+            </div>
+            <div class="btn pull-right" id="chartBtn">
+                Chart        
+            </div>
+    {{/if}}
+</template>
+
+<template name="graph">
+{{#if show}}
+        {{>waiting_graph}}
+        {{charting}}
+        <div class="d3_graph" id="{{field}}_graph"></div>
+{{/if}}
+</template>
+
+<template name="waiting_graph">
+{{#if exist}}
+    Graphs: 
+{{else}}
+    Proccessing the graphs, waiting a split second...
+    <img src="drop.gif">
+{{/if}}
+</template>
+
+<template name="introduction">
+{{#if ready}}
+<div class="hero-unit span11">
+    <p>You are accessing the dataset from {{url}}</p> 
+    <p>There are {{num_cols}} fields you can choose to chart</p>
+    {{#each schema}}
+    <p>{{label}} ({{simpletype}})</p>
+    {{/each}}
+</div>
+{{/if}}
+</template>
+
+<template name="processing">
+{{#if ready}}
+    <div class="hero-unit span8 offset1">
+        <h1>Preparing your dataset, just a split second..</h1>
+    <img src="drop.gif">
+    </div>
+{{/if}}
+</template>

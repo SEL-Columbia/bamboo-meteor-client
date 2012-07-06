@@ -53,10 +53,10 @@
 
 
 <template name="maincontent">
-    <div id="column-list" class="accordion span9">
+    <div id="field-list" class="accordion span9">
         <ul>
-        {{#each columns}}
-            {{> column}}
+        {{#each fields}}
+            {{> field}}
         {{/each}}
         </ul>
     </div>
@@ -67,7 +67,7 @@
     </div>
 </template>
 
-<template name="column">
+<template name="field">
     <div class="accordion-group">
         <div class="accordion-heading">
             <a class="accordion-toggle" href="#{{this}}" data-toggle="collapse" data-target="#{{this}}">{{this}}</a>

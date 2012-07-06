@@ -1,0 +1,52 @@
+/* CSS declarations go here */
+body{
+    background:#CCE89B;
+}
+input{
+    width:300px;
+    height:20px;
+    font-size:1.3em;
+}
+    
+#dataSourceURL{
+    margin-top:10px;
+}
+#submitURL{
+    margin-left:10px;
+}
+.url_init{
+    position:absolute;
+    top:50%;
+}
+.logo_bamboo{
+    position:absolute;
+    top:40%;
+    left:40%;
+    width:200;
+    height:100;
+}
+.control{
+    margin-top:50px;
+}
+.navbar-inner{
+    background:grey;
+}
+.chosen{
+    width:200px;
+}
+#chartBtn{
+    margin-top:20px;
+}
+
+.chart div {
+    stroke:white;
+    fill:green;
+}
+
+#d3select {
+    position:absolute;
+    top:60%;
+    left:40%;
+}
+/*myf's color 74E01B*/
+/*nanzhu's color CCE89B*/
