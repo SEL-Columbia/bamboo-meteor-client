@@ -2,25 +2,31 @@ bamboo-meteor-client
 ====================
 
 A basic bamboo client built on meteor.js
-v0.1: emulate /static/bar_graphs.html on bamboo (see example at http://optimus.modilabs.org:9000/static/bar_graphs.html)
+v0.1: emulate /static/bar_graphs.html on bamboo 
 
 installation
 ============
 Install meteor and packages:
 
-    curl install.meteor.com | /bin/sh
-    meteor add coffeescript
-    meteor add jquery
+run with meteor:
 
-Install node (download from http://nodejs.org) and request package:
-    
-    npm install request
+    if you are running Mac, Ubuntu, Debian Centos of Fedora:
+        > curl install.meteor.com | /bin/sh
+    else:
+        > git clone http://github.com/meteor/meteor.git
+        > cd meteor
+        > ./install
+    then:
+        > git clone https://github.com/modilabs/bamboo-meteor-client.git
+        > cd /bamboo-meteor-client/bamboo-meteor/
+        > meteor
+        go to localhost:3000 you'll see
 
-Run meteor, in your bamboo-meteor-client directory:
+ you can also run with node after you compiled the bundle with meteor:
 
-    meteor
+Install node (download from http://nodejs.org)
 
-Browse to localhost:3000
+please see details at http://docs.meteor.com/#deploying
 
 deployment
 ==========
@@ -28,10 +34,4 @@ Currently it is deployed at
 http://bamboo.meteor.com
 
 Please check this testing site for the newest deployment before we migrate it to bamboo site
->
- _          _ _       
-| |__   ___| | | ___  
-| '_ \ / _ \ | |/ _ \ 
-| | | |  __/ | | (_) |
-|_| |_|\___|_|_|\___/ 
                       
