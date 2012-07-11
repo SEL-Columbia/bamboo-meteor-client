@@ -7,14 +7,16 @@
     <div class="container-fluid">
         {{> url_entry}}
     </div>
-    {{> processing}}
-    {{> body_render}}
-    <div id="d3select"></div>
+    <div class="mainbody">
+        {{> processing}}
+        {{> body_render}}
+        <div id="d3select"></div>
+    </div>
 </body>
 <template name="body_render">
 {{#if show}}
     {{> introduction}}
-    <div class="hero-unit span8 offset1">
+    <div class="well span8 offset1">
         <div class="control">
             {{> control_panel}}
         </div>
@@ -22,6 +24,7 @@
             {{> graph}}
         </div>
     </div>
+    {{> add_new_graph}}
 {{/if}}
 </template>
             
@@ -58,12 +61,12 @@
 <template name="control_panel">
     {{#if show}}
             <div class="page-header">
-                <h3>Control Panel</h3>
+                <h3>Graphing Control Panel</h3>
             </div>
-            <div class="row offset1">
+            <div class="row">
                 <b>View</b>
                 {{chosen}}
-                <select class="chosen" id="view">
+                <select class="chosen" id="view" >
                     {{#each fields}}
                         <option>{{this}}</option>
                     {{/each}}
@@ -78,9 +81,9 @@
                 Generate
                 {{num_graph}}
                 graphs
-            </div>
-            <div class="btn pull-right" id="chartBtn">
-                Chart        
+                <div class="btn pull-right" id="chartBtn">
+                    Chart        
+                </div>
             </div>
     {{/if}}
 </template>
@@ -95,7 +98,7 @@
 
 <template name="waiting_graph">
 {{#if exist}}
-    Graphs: 
+    <h3>Showing Graph of {{field}} {{group_by}}</h3>
 {{else}}
     Proccessing the graphs, waiting a split second...
     <img src="drop.gif">
@@ -104,21 +107,46 @@
 
 <template name="introduction">
 {{#if ready}}
-<div class="hero-unit span11">
+<div class="well span11">
     <p>You are accessing the dataset from {{url}}</p> 
     <p>There are {{num_cols}} fields you can choose to chart</p>
-    {{#each schema}}
-    <p>{{label}} ({{simpletype}})</p>
-    {{/each}}
+    {{#if show_all}}
+        {{#each schema}}
+        <p>{{label}} ({{simpletype}})</p>
+        {{/each}}
+        {{#if long}}
+            <div class="btn pull-right" id="hideBtn">
+                hide
+            </div>
+        {{/if}}
+    {{else}}
+        <p> show 5 entries, or click the button to show all </p>
+        {{#each schema_less}}
+        <p>{{label}} ({{simpletype}})</p>
+        {{/each}}
+        <div class="btn pull-right" id="moreBtn">
+            more      
+        </div>
+    {{/if}}
 </div>
 {{/if}}
 </template>
 
 <template name="processing">
 {{#if ready}}
-    <div class="hero-unit span8 offset1">
+    <div class="well span8 offset1">
         <h1>Preparing your dataset, just a split second..</h1>
     <img src="drop.gif">
+    </div>
+{{/if}}
+</template>
+
+<template name="add_new_graph">
+{{#if show}}
+    <div class="well span8 offset1">
+        <div class="btn pull-right" id="chartBtn">
+            Add A Graph
+        </div>
     </div>
 {{/if}}
 </template>

@@ -50,3 +50,13 @@ input{
 }
 /*myf's color 74E01B*/
 /*nanzhu's color CCE89B*/
+
+.box {
+    border:1px solid;
+}
+.control .row {
+    margin-left:20px;
+}
+.mainbody {
+    margin:50px;
+}

@@ -39,8 +39,7 @@ if root.Meteor.is_client
 
     root.Template.control_panel.show = ->
         #if there is currentDatasetURL in session-> show
-        Session.get('currentDatasetURL') and Session.get('fields')
-
+        Session.get('currentDatasetURL') and Session.get('fields') and not Session.get('graph')
     # have to write this code to make chosen recognized in jquery
     root.Template.control_panel.chosen= ->
         Meteor.defer(->
@@ -105,16 +104,44 @@ if root.Meteor.is_client
         Session.get('fields').length
 
     root.Template.introduction.schema =->
-        url = Session.get('currentDatasetURL')
-        obj = Schemas.findOne
-            datasetURL:url
-        _.values obj.schema
+        schema = Session.get('schema')
+        _.values schema
+
+    root.Template.introduction.schema_less =->
+        schema = Session.get('schema')
+        arr = _.values schema
+        arr.slice(0,5)
+
+    root.Template.introduction.events= {
+        "click #moreBtn": ->
+            Session.set('show_all', true)
+        "click #hideBtn": ->
+            Session.set('show_all', false)
+    }
+
+    root.Template.introduction.long =->
+        Session.get('fields').length > 5
+
+    root.Template.introduction.show_all =->
+        Session.get('fields').length < 6 or Session.get('show_all')
 
     root.Template.body_render.show =->
         Session.get('currentDatasetURL') and Session.get('fields')
 
     root.Template.waiting_graph.exist =->
         exist  = Session.get('graph')
+
+    root.Template.waiting_graph.field =->
+        Session.get("currentView")
+    root.Template.waiting_graph.group_by =->
+        g = Session.get("currentGroup")
+        if g is ""
+            return ""
+        else
+            return "grouped by " + g
+
+    root.Template.add_new_graph.show =->
+        Session.get('graph')
 
 ############# UI LIB #############################
 
@@ -147,35 +174,13 @@ Meteor.methods(
     
 
 
-    make_poly_chart: (obj) ->
-        [div, dataElement] = obj
-        #dataElement.titleName = makeTitle(dataElement.name)
-        dataElement.titleName = dataElement["groupVal"]
-        data = dataElement.data
-        dataSize = _.size(data)
-
-        unless (dataSize is 0) or (dataElement.name.charAt(0) is '_')
-            keyValSeparated =
-                x: _.keys(data)
-                y: _.values(data)
-            if typeof keyValSeparated.y[0] is "number"
-                #if number make pure histogram
-                #histogram logic
-                gg.graph(keyValSeparated).layer(gg.layer.bar().map('x','x').map('y','y')).opts(
-                    width: Math.min(dataSize*60 + 100, 220)
-                    height: "270"
-                    "padding-right": "50"
-                    title: dataElement.titleName
-                    "title-size":12
-                    "legend-position":"bottom"
-                ).render(div)
     make_single_chart: (obj) ->
-        [div, dataElement] =obj
+        [div, dataElement, min, max] =obj
         #chart based on groupable property
         if dataElement.name in Session.get("groupable_fields")
-            barchart(dataElement,div)
+            barchart(dataElement,div,min,max)
         else
-            boxplot(dataElement,div)
+            boxplot(dataElement,div,min,max)
 
 
     clear_graphs: ->
@@ -183,70 +188,51 @@ Meteor.methods(
         for item in graph_divs
             $(item).empty()
 
-#    charting: ->
-#        Meteor.call('clear_graphs')
-#        url = Session.get("currentDatasetURL")
-#        group = Session.get("currentGroup") ? "" #some fallback
-#        item_list = Summaries.find(datasetURL:url, groupKey:group).fetch()
-#        list = Meteor.call('grouping', item_list)
-#        $.each(list, (key,value)->
-#            for item in value
-#                div = "#"+item["name"]+".gg"
-#                Meteor.call("make_single_chart",[div,item])
-#        )
 
     field_charting: ->
         Meteor.call('clear_graphs')
         url = Session.get("currentDatasetURL")
         group = Session.get("currentGroup") ? "" #some fallback
         field = Session.get("currentView")
+        groupable = Session.get("groupable_fields")
         item_list = Summaries.find
             datasetURL: url
             groupKey: group
             name: field
         .fetch()
         div = "#" + field+"_graph"
+        max_arr = item_list.map (item)->
+            if item.name in groupable
+                maxing(item.data)
+            else
+                item.data.max
+        max = _.max(max_arr)
+        min_arr = item_list.map (item)->
+            if item.name in groupable
+                mining(item.data)
+            else
+                item.data.min
+        min = _.min(min_arr)
         for item in item_list
-            Meteor.call("make_single_chart", [div, item])
+            Meteor.call("make_single_chart", [div, item, min, max])
 
-    grouping: (list) ->
-        fin = {}
-        #group_list = _list.pluck("groupVal")
-        #group_list = (list.map (x)->x.groupVal).unique()
-        group_list = list.map (x)->x.groupVal
-        for item in group_list
-            fin[item]=[]
-        for item in list
-           group = item['groupVal']
-           fin[group].push(item)
-        fin
 
     get_fields:(url)->
         fin = []
         schema_dataset = Schemas.findOne
             datasetURL: url
-            #alert "in get_fields:schema_dataset " + schema_dataset
         if schema_dataset
             console.log "data found: "
             names = []
             schema = schema_dataset['schema']
             for name of schema
                 names.push(name)
-            #fields is an array []
             fin = names
-            #alert "found schema" + fin
-        ###
-        else
-            dataset = Datasets.findOne(url: url)
-            if (!dataset)
-                Meteor.call('register_dataset', url)
-        ###
         try
             Session.set('schema', schema_dataset.schema)
             Session.set('fields', fin)
         catch error
             console.log "no schema yet.. waiting"
-        #alert fin
 
     #testing only
     alert: (something)->
