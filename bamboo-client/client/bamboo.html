@@ -13,9 +13,16 @@
         <div id="d3select"></div>
     </div>
 </body>
+            
 <template name="body_render">
 {{#if show}}
     {{> introduction}}
+    {{> graphing_block}}
+    {{> add_new_graph}}
+{{/if}}
+</template>
+            
+<template name="graphing_block">
     <div class="well span8 offset1">
         <div class="control">
             {{> control_panel}}
@@ -24,10 +31,7 @@
             {{> graph}}
         </div>
     </div>
-    {{> add_new_graph}}
-{{/if}}
 </template>
-            
 
 <template name="url_entry">
     {{#if current_dataset_url}}
@@ -56,6 +60,42 @@
         </div>
     </div>
     {{/if}}    
+</template>
+
+<template name="processing">
+{{#if ready}}
+    <div class="well span8 offset1">
+        <h1>Preparing your dataset, just a split second..</h1>
+    <img src="drop.gif">
+    </div>
+{{/if}}
+</template>
+
+<template name="introduction">
+{{#if ready}}
+<div class="well span8 offset1">
+    <p>You are accessing the dataset from {{url}}</p> 
+    <p>There are {{num_cols}} fields you can choose to chart</p>
+    {{#if show_all}}
+        {{#each schema}}
+        <p>{{label}} ({{simpletype}})</p>
+        {{/each}}
+        {{#if long}}
+            <div class="btn pull-right" id="hideBtn">
+                hide
+            </div>
+        {{/if}}
+    {{else}}
+        <p> show 5 entries, or click the button to show all </p>
+        {{#each schema_less}}
+        <p>{{label}} ({{simpletype}})</p>
+        {{/each}}
+        <div class="btn pull-right" id="moreBtn">
+            more      
+        </div>
+    {{/if}}
+</div>
+{{/if}}
 </template>
 
 <template name="control_panel">
@@ -88,14 +128,6 @@
     {{/if}}
 </template>
 
-<template name="graph">
-{{#if show}}
-        {{>waiting_graph}}
-        {{charting}}
-        <div class="d3_graph" id="{{field}}_graph"></div>
-{{/if}}
-</template>
-
 <template name="waiting_graph">
 {{#if exist}}
     <h3>Showing Graph of {{field}} {{group_by}}</h3>
@@ -104,47 +136,22 @@
     <img src="drop.gif">
 {{/if}}
 </template>
-
-<template name="introduction">
-{{#if ready}}
-<div class="well span11">
-    <p>You are accessing the dataset from {{url}}</p> 
-    <p>There are {{num_cols}} fields you can choose to chart</p>
-    {{#if show_all}}
-        {{#each schema}}
-        <p>{{label}} ({{simpletype}})</p>
-        {{/each}}
-        {{#if long}}
-            <div class="btn pull-right" id="hideBtn">
-                hide
-            </div>
-        {{/if}}
-    {{else}}
-        <p> show 5 entries, or click the button to show all </p>
-        {{#each schema_less}}
-        <p>{{label}} ({{simpletype}})</p>
-        {{/each}}
-        <div class="btn pull-right" id="moreBtn">
-            more      
-        </div>
-    {{/if}}
-</div>
+ 
+<template name="graph">
+{{#if show}}
+        {{>waiting_graph}}
+        {{charting}}
+        <div class="d3_graph" id="{{field}}_graph"></div>
 {{/if}}
 </template>
 
-<template name="processing">
-{{#if ready}}
-    <div class="well span8 offset1">
-        <h1>Preparing your dataset, just a split second..</h1>
-    <img src="drop.gif">
-    </div>
-{{/if}}
-</template>
+
+
 
 <template name="add_new_graph">
 {{#if show}}
     <div class="well span8 offset1">
-        <div class="btn pull-right" id="chartBtn">
+        <div class="btn pull-right" id="addGraphBtn">
             Add A Graph
         </div>
     </div>

@@ -13,6 +13,11 @@ constants =
 if root.Meteor.is_client
     
     #every function can be accessed by the template it is defined under
+    ##################BODY RENDER#####################
+    root.Template.body_render.show =->
+        Session.get('currentDatasetURL') and Session.get('fields')
+
+    ###################URL-Entry###########################
     root.Template.url_entry.events = "click .btn": ->
         url = $('#dataSourceURL').val()
         Session.set('currentDatasetURL', url)
@@ -37,6 +42,40 @@ if root.Meteor.is_client
     root.Template.url_entry.current_dataset_url = ->
         Session.get('currentDatasetURL')
 
+    ####################PROCESSING######################
+    root.Template.processing.ready =->
+        Session.get('currentDatasetURL') and not Session.get('fields')
+
+    #################INTRODUCTION###########################
+    root.Template.introduction.ready =->
+        Session.get('currentDatasetURL') and Session.get('fields')
+
+    root.Template.introduction.num_cols =->
+        Session.get('fields').length
+
+    root.Template.introduction.schema =->
+        schema = Session.get('schema')
+        _.values schema
+
+    root.Template.introduction.schema_less =->
+        schema = Session.get('schema')
+        arr = _.values schema
+        arr.slice(0,5)
+
+    root.Template.introduction.events= {
+        "click #moreBtn": ->
+            Session.set('show_all', true)
+        "click #hideBtn": ->
+            Session.set('show_all', false)
+    }
+
+    root.Template.introduction.long =->
+        Session.get('fields').length > 5
+
+    root.Template.introduction.show_all =->
+        Session.get('fields').length < 6 or Session.get('show_all')
+
+    #####################Control-Panel##################
     root.Template.control_panel.show = ->
         #if there is currentDatasetURL in session-> show
         Session.get('currentDatasetURL') and Session.get('fields') and not Session.get('graph')
@@ -72,6 +111,21 @@ if root.Meteor.is_client
         Session.set('currentView', view_field)
         Session.set('graph', false)
 
+    ##################WAITING_GRAPH######################
+    root.Template.waiting_graph.exist =->
+        exist  = Session.get('graph')
+
+    root.Template.waiting_graph.field =->
+        Session.get("currentView")
+    root.Template.waiting_graph.group_by =->
+        g = Session.get("currentGroup")
+        if g is ""
+            return ""
+        else
+            return "grouped by " + g
+
+
+    #####################GRAPH#######################333
     root.Template.graph.show=->
         url = Session.get('currentDatasetURL')
         group = Session.get('currentGroup')
@@ -94,55 +148,13 @@ if root.Meteor.is_client
             ,1000)
         ""
 
-    root.Template.processing.ready =->
-        Session.get('currentDatasetURL') and not Session.get('fields')
-
-    root.Template.introduction.ready =->
-        Session.get('currentDatasetURL') and Session.get('fields')
-
-    root.Template.introduction.num_cols =->
-        Session.get('fields').length
-
-    root.Template.introduction.schema =->
-        schema = Session.get('schema')
-        _.values schema
-
-    root.Template.introduction.schema_less =->
-        schema = Session.get('schema')
-        arr = _.values schema
-        arr.slice(0,5)
-
-    root.Template.introduction.events= {
-        "click #moreBtn": ->
-            Session.set('show_all', true)
-        "click #hideBtn": ->
-            Session.set('show_all', false)
-    }
-
-    root.Template.introduction.long =->
-        Session.get('fields').length > 5
-
-    root.Template.introduction.show_all =->
-        Session.get('fields').length < 6 or Session.get('show_all')
-
-    root.Template.body_render.show =->
-        Session.get('currentDatasetURL') and Session.get('fields')
-
-    root.Template.waiting_graph.exist =->
-        exist  = Session.get('graph')
-
-    root.Template.waiting_graph.field =->
-        Session.get("currentView")
-    root.Template.waiting_graph.group_by =->
-        g = Session.get("currentGroup")
-        if g is ""
-            return ""
-        else
-            return "grouped by " + g
-
+    ##########ADDNEW GRAPH#####################################
     root.Template.add_new_graph.show =->
         Session.get('graph')
 
+    root.Template.add_new_graph.events = "click #addGraphBtn":->
+        Session.set('add_new_graph_flag', true)
+        
 ############# UI LIB #############################
 
 
