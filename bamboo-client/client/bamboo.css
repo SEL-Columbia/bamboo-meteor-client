@@ -60,3 +60,12 @@ input{
 .mainbody {
     margin:50px;
 }
+
+.borderset {
+    opacity: 0.9;
+    stroke: grey;
+    stroke-width: 2px;
+    -webkit-box-shadow: 0 0 5px 5px #888888;
+    box-shadow: 0 0 5px 5px #888888;
+}
+

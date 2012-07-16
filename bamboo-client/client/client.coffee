@@ -115,15 +115,8 @@ if root.Meteor.is_client
     root.Template.waiting_graph.exist =->
         exist  = Session.get('graph')
 
-    root.Template.waiting_graph.field =->
-        Session.get("currentView")
-    root.Template.waiting_graph.group_by =->
-        g = Session.get("currentGroup")
-        if g is ""
-            return ""
-        else
-            return "grouped by " + g
-
+    root.Template.waiting_graph.titles =->
+        Session.get("titles")
 
     #####################GRAPH#######################333
     root.Template.graph.show=->

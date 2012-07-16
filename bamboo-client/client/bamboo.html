@@ -78,7 +78,7 @@
     <p>There are {{num_cols}} fields you can choose to chart</p>
     {{#if show_all}}
         {{#each schema}}
-        <p>{{label}} ({{simpletype}})</p>
+        <p><a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a></p>
         {{/each}}
         {{#if long}}
             <div class="btn pull-right" id="hideBtn">
@@ -88,7 +88,7 @@
     {{else}}
         <p> show 5 entries, or click the button to show all </p>
         {{#each schema_less}}
-        <p>{{label}} ({{simpletype}})</p>
+        <p><a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a></p>
         {{/each}}
         <div class="btn pull-right" id="moreBtn">
             more      
@@ -130,7 +130,7 @@
 
 <template name="waiting_graph">
 {{#if exist}}
-    <h3>Showing Graph of {{field}} {{group_by}}</h3>
+    <h3> {{titles}} </h3>
 {{else}}
     Proccessing the graphs, waiting a split second...
     <img src="drop.gif">
