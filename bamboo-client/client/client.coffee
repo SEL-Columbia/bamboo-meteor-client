@@ -17,6 +17,16 @@ if root.Meteor.is_client
     root.Template.body_render.show =->
         Session.get('currentDatasetURL') and Session.get('fields')
 
+    root.Template.body_render.graphing_items =->
+        if not Session.get('graphing_items')
+            Session.set("graphing_items",[
+                field:"none"
+                group_by:"none"
+                status:"active"
+            ])
+        Session.get('graphing_items')
+
+
     ###################URL-Entry###########################
     root.Template.url_entry.events = "click .btn": ->
         url = $('#dataSourceURL').val()
@@ -62,12 +72,11 @@ if root.Meteor.is_client
         arr = _.values schema
         arr.slice(0,5)
 
-    root.Template.introduction.events= {
+    root.Template.introduction.events=
         "click #moreBtn": ->
             Session.set('show_all', true)
         "click #hideBtn": ->
             Session.set('show_all', false)
-    }
 
     root.Template.introduction.long =->
         Session.get('fields').length > 5
@@ -130,7 +139,11 @@ if root.Meteor.is_client
         url = Session.get('currentDatasetURL')
         group = Session.get('currentGroup')
         view = Session.get('currentView')
-        url and view
+        existing_graphs = Session.get('graphing_items')
+        for item in existing_graphs
+            if item.status is "inactive"
+                exist = true
+        (url and view) or exist
 
     root.Template.graph.field =->
         div = Session.get('currentView')
@@ -144,6 +157,7 @@ if root.Meteor.is_client
                 if summary
                     Meteor.call('field_charting')
                     Session.set('graph', true)
+                    #Meteor.call('inactivate_graph')
                     clearInterval(fieldInterval)
             ,1000)
         ""
@@ -153,12 +167,31 @@ if root.Meteor.is_client
         Session.get('graph')
 
     root.Template.add_new_graph.events = "click #addGraphBtn":->
+        new_graph =
+            field: ""
+            status: "active"
+        existing_graphs = Session.get("graphing_items")
+        current_graphs = existing_graphs.push(new_graph)
+        Session.set("graphing_items", current_graphs)
+
         Session.set('add_new_graph_flag', true)
         
 ############# UI LIB #############################
 
 
 Meteor.methods(
+    inactivate_graph: ->
+        items = Session.get('graphing_items')
+        view_field = Session.get('currentView')
+        group_by = Session.get('currentGroup')
+        for item in items
+            if item.status is "active"
+                item.field = view_field
+                item.group_by = group_by
+                item.status = "inactive"
+        Session.set("currentGroup", false)
+        Session.set("currentView", false)
+
     chosen: ->
             $(".chosen").chosen(
                 no_results_text: "No Result Matched"
@@ -179,7 +212,7 @@ Meteor.methods(
         schema = Session.get('schema')
         fin = []
         for item of schema
-            if schema[item]['olap_type'] == 'dimension'
+            if schema[item]['olap_type'] is 'dimension'
                 fin.push(item)
 
         Session.set('groupable_fields',fin)

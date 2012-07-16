@@ -17,7 +17,9 @@
 <template name="body_render">
 {{#if show}}
     {{> introduction}}
-    {{> graphing_block}}
+    {{#each graphing_items}}
+        {{> graphing_block}}
+    {{/each}}
     {{> add_new_graph}}
 {{/if}}
 </template>
