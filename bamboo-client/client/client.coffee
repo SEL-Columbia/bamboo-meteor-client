@@ -150,7 +150,13 @@ if root.Meteor.is_client
             ,1000)
         ""
     #########GRAPH###############################
-        
+    root.Template.graph.events = "click .deletionBtn": ->
+        field = this.field
+        group = this.group
+        divstr = '#'+field+'_'+group+'_block'
+        Session.set(field+'_'+group, false)
+        $(divstr).remove()
+
 ############# UI LIB #############################
 
 
