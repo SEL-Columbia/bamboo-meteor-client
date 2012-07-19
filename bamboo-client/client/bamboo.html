@@ -74,27 +74,108 @@
 <template name="introduction">
 {{#if ready}}
 <div class="well span8 offset1">
+
+
     <p>You are accessing the dataset from {{url}}</p> 
     <p>There are {{num_cols}} fields you can choose to chart</p>
-    {{#if show_all}}
-        {{#each schema}}
-        <p>{{label}} ({{simpletype}})</p>
-        {{/each}}
+	<table border="1"><tr><td>
+	<p>  </p>
+	{{#if show_all}}
+        	{{#each one}}
+        	<p><a href="https://topol.cartodb.com/tables/gujarat/embed_map" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
         {{#if long}}
-            <div class="btn pull-right" id="hideBtn">
-                hide
-            </div>
+            	<div class="btn pull-right" id="hideBtn">
+              	hide
+            	</div>
         {{/if}}
-    {{else}}
-        <p> show 5 entries, or click the button to show all </p>
-        {{#each schema_less}}
-        <p>{{label}} ({{simpletype}})</p>
-        {{/each}}
-        <div class="btn pull-right" id="moreBtn">
-            more      
-        </div>
-    {{/if}}
-</div>
+    	{{else}}
+        	{{#each schema_lessone}}
+        	<p><a href="https://topol.cartodb.com/tables/gujarat/embed_map" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        	<div class="btn pull-right" id="moreBtn">
+            	more      
+        	</div>
+    	{{/if}}
+	</td><td>
+	{{#if show_all}}
+        	{{#each two}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+            	<div class="btn pull-right" id="hideBtn">
+                	hide
+            	</div>
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lesstwo}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        	<div class="btn pull-right" id="moreBtn">
+            	more      
+        	</div>
+    	{{/if}}
+	</td><td>
+	{{#if show_all}}
+        	{{#each three}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+            	<div class="btn pull-right" id="hideBtn">
+                	hide
+            	</div>
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessthree}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        	<div class="btn pull-right" id="moreBtn">
+            	more      
+        	</div>
+    	{{/if}}
+	</td><td>
+	{{#if show_all}}
+        	{{#each four}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+            	<div class="btn pull-right" id="hideBtn">
+                	hide
+            	</div>
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessfour}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        	<div class="btn pull-right" id="moreBtn">
+            	more      
+        	</div>
+    	{{/if}}
+	
+		</td><td>
+	{{#if show_all}}
+        	{{#each five}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+            	<div class="btn pull-right" id="hideBtn">
+                	hide
+            	</div>
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessfive}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        	<div class="btn pull-right" id="moreBtn">
+            	more      
+        	</div>
+    	{{/if}}
+
+
+	</td></tr></table>
+
+
+       </div>
 {{/if}}
 </template>
 
