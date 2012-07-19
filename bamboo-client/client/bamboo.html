@@ -17,19 +17,15 @@
 <template name="body_render">
 {{#if show}}
     {{> introduction}}
-    {{> graphing_block}}
-    {{> add_new_graph}}
+    <div class="graph_area">
+    </div>
+    {{> control_panel}}
 {{/if}}
 </template>
             
 <template name="graphing_block">
     <div class="well span8 offset1">
-        <div class="control">
-            {{> control_panel}}
-        </div>
-        <div class="graphing">
-            {{> graph}}
-        </div>
+        Graphs:
     </div>
 </template>
 
@@ -72,7 +68,6 @@
 </template>
 
 <template name="introduction">
-{{#if ready}}
 <div class="well span8 offset1">
     <p>You are accessing the dataset from {{url}}</p> 
     <p>There are {{num_cols}} fields you can choose to chart</p>
@@ -95,15 +90,15 @@
         </div>
     {{/if}}
 </div>
-{{/if}}
 </template>
 
 <template name="control_panel">
-    {{#if show}}
+<div class="well span8 offset1">
+    {{#if active}}
             <div class="page-header">
                 <h3>Graphing Control Panel</h3>
             </div>
-            <div class="row">
+            <div class="row offset1">
                 <b>View</b>
                 {{chosen}}
                 <select class="chosen" id="view" >
@@ -125,35 +120,31 @@
                     Chart        
                 </div>
             </div>
+            {{#if waiting}}
+                {{>waiting_graph}}
+                {{charting}}
+            {{/if}}
+    {{else}}
+        <div class="btn btn-large pull-right" id="addNewGraphBtn">
+            <h3>Add a New Graph</h3>
+        </div>
     {{/if}}
+</div>
 </template>
 
 <template name="waiting_graph">
-{{#if exist}}
-    <h3> {{titles}} </h3>
-{{else}}
     Proccessing the graphs, waiting a split second...
     <img src="drop.gif">
-{{/if}}
 </template>
  
 <template name="graph">
-{{#if show}}
-        {{>waiting_graph}}
-        {{charting}}
-        <div class="d3_graph" id="{{field}}_graph"></div>
-{{/if}}
-</template>
-
-
-
-
-<template name="add_new_graph">
-{{#if show}}
-    <div class="well span8 offset1">
-        <div class="btn pull-right" id="addGraphBtn">
-            Add A Graph
-        </div>
+<div class="well span8 offset1" id="{{field}}_{{group}}_block">
+    <div class="pull-right" id="{{field}}_{{group}}_btn">
+        <img class="pointer deletionBtn" src="deletion.svg"></img>
     </div>
-{{/if}}
+        <h3> {{title}} </h3>
+        <div class="d3_graph" id="{{field}}_{{group}}_graph"></div>
+</div>
 </template>
+
+

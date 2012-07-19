@@ -134,6 +134,9 @@ barchart= (dataElement, div, min, max)->
         )
         .attr('width',(d)->
             w = (width-x_padding) / data.length - bar_padding
+            if ( w > 30 )
+                w = 30
+            w
         )
         .attr('height',(d)->
             height - y_padding - y_scale d.value
@@ -225,21 +228,17 @@ barchart= (dataElement, div, min, max)->
         .call(y_axis)
                 
 boxplot= (dataElement, div, min, max)->
-    console.log "enter"
+    console.log "box plot a a a enter"
     name = dataElement.name
     data = dataElement.data
     if data.count is 1
+        console.log "data.count is one"
         display_name = dataElement.groupVal
         display_value = dataElement.data.min
         dataElement.data = {}
         dataElement.data[display_name]=display_value
         return barchart(dataElement, div, min, max)
     
-    if dataElement.groupKey is ""
-        str = "" + dataElement.name
-    else
-        str = "" + dataElement.name + " grouped by " + dataElement.groupKey
-    Session.set("titles", "Box Plot of " + str)
 
     y_padding = 20
     x_padding = 20
@@ -249,6 +248,7 @@ boxplot= (dataElement, div, min, max)->
     width = 200
     height = width*1.5
 
+    console.log div
     svg = d3.select(div)
             .append('svg:svg')
             .attr('width', width)

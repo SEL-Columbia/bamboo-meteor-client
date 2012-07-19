@@ -1,6 +1,7 @@
 root = global ? window
 constants =
-    defaultURL : 'https://www.dropbox.com/s/0m8smn04oti92gr/sample_dataset_school_survey.csv?dl=1'
+    #defaultURL : 'https://www.dropbox.com/s/0m8smn04oti92gr/sample_dataset_school_survey.csv?dl=1'
+    defaultURL : 'https://dl.dropbox.com/s/5mu9x13upanqpgy/file.csv?dl=1'
 
 Meteor.startup ->
     if root.Meteor.is_client

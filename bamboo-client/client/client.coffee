@@ -2,12 +2,6 @@ root = global ? window
 bambooUrl = "/"
 observationsUrl = bambooUrl + "datasets"
 
-constants =
-    #defaultURL : 'http://formhub.org/education/forms/schooling_status_format_18Nov11/data.csv'
-    defaultURL : 'https://www.dropbox.com/s/0m8smn04oti92gr/sample_dataset_school_survey.csv?dl=1'
-    #defaultURL : 'http://localhost:8000/education/forms/schooling_status_format_18Nov11/data.csv'
-    #defaultURL : 'http://formhub.org/mberg/forms/good_eats/data.csv'
-
 
 ############ UI LOGIC ############################
 if root.Meteor.is_client
@@ -47,9 +41,6 @@ if root.Meteor.is_client
         Session.get('currentDatasetURL') and not Session.get('fields')
 
     #################INTRODUCTION###########################
-    root.Template.introduction.ready =->
-        Session.get('currentDatasetURL') and Session.get('fields')
-
     root.Template.introduction.num_cols =->
         Session.get('fields').length
 
@@ -76,9 +67,10 @@ if root.Meteor.is_client
         Session.get('fields').length < 6 or Session.get('show_all')
 
     #####################Control-Panel##################
-    root.Template.control_panel.show = ->
-        #if there is currentDatasetURL in session-> show
-        Session.get('currentDatasetURL') and Session.get('fields') and not Session.get('graph')
+    root.Template.control_panel.active = ->
+        not Session.get('addNewGraphFlag')
+
+
     # have to write this code to make chosen recognized in jquery
     root.Template.control_panel.chosen= ->
         Meteor.defer(->
@@ -102,33 +94,49 @@ if root.Meteor.is_client
     root.Template.control_panel.num_graph= ->
         20
     
-    root.Template.control_panel.events= "click .btn": ->
-        group = $('#group-by').val()
-        view_field = $('#view').val()
-        url = Session.get('currentDatasetURL')
-        Meteor.call("summarize_by_group",[url,group])
-        Session.set('currentGroup', group)
-        Session.set('currentView', view_field)
-        Session.set('graph', false)
+    root.Template.control_panel.waiting=->
+        Session.get('waiting')
 
-    ##################WAITING_GRAPH######################
-    root.Template.waiting_graph.exist =->
-        exist  = Session.get('graph')
+    root.Template.control_panel.events= {
+        "click #chartBtn": ->
+            group = $('#group-by').val()
+            view_field = $('#view').val()
 
-    root.Template.waiting_graph.titles =->
-        Session.get("titles")
+            #check whether graph exists already
+            if Session.get(view_field + '_' + group)
+                alert "Graph already exists"
+                return
 
-    #####################GRAPH#######################333
-    root.Template.graph.show=->
-        url = Session.get('currentDatasetURL')
-        group = Session.get('currentGroup')
-        view = Session.get('currentView')
-        url and view
+            url = Session.get('currentDatasetURL')
+            Meteor.call("summarize_by_group",[url,group])
+            Session.set('currentGroup', group)
+            Session.set('currentView', view_field)
+            Session.set('waiting', true)
+            Session.set(view_field + '_' + group, true)
+            
+            #TODO: if the count = 1 when drawing box plot
+            title = ""
+            if view_field in Session.get('groupable_fields')
+                title = "Bar Chart of "
+            else
+                title = "Box Plot of "
+            title = title + view_field
+            if group != ""
+                title = title + " group by " + group
+            frag = Meteor.ui.render( ->
+                return Template.graph({
+                    title: title
+                    field: view_field
+                    group: group
+                })
+            )
+            $(".graph_area")[0].appendChild(frag)
 
-    root.Template.graph.field =->
-        div = Session.get('currentView')
-    
-    root.Template.graph.charting =->
+        "click #addNewGraphBtn": ->
+            Session.set('addNewGraphFlag', false)
+    }
+
+    root.Template.control_panel.charting =->
         #todo: move summarize_by_group here?
         #todo: use async to serize sum & charting
         fieldInterval = setInterval(->
@@ -136,17 +144,12 @@ if root.Meteor.is_client
                 summary = Summaries.findOne( {groupKey : Session.get('currentGroup')} )
                 if summary
                     Meteor.call('field_charting')
-                    Session.set('graph', true)
+                    Session.set('waiting', false)
+                    Session.set('addNewGraphFlag', true)
                     clearInterval(fieldInterval)
             ,1000)
         ""
-
-    ##########ADDNEW GRAPH#####################################
-    root.Template.add_new_graph.show =->
-        Session.get('graph')
-
-    root.Template.add_new_graph.events = "click #addGraphBtn":->
-        Session.set('add_new_graph_flag', true)
+    #########GRAPH###############################
         
 ############# UI LIB #############################
 
@@ -182,20 +185,15 @@ Meteor.methods(
     make_single_chart: (obj) ->
         [div, dataElement, min, max] =obj
         #chart based on groupable property
+        console.log div
         if dataElement.name in Session.get("groupable_fields")
             barchart(dataElement,div,min,max)
         else
             boxplot(dataElement,div,min,max)
 
 
-    clear_graphs: ->
-        graph_divs = $('.gg_graph')
-        for item in graph_divs
-            $(item).empty()
-
 
     field_charting: ->
-        Meteor.call('clear_graphs')
         url = Session.get("currentDatasetURL")
         group = Session.get("currentGroup") ? "" #some fallback
         field = Session.get("currentView")
@@ -205,19 +203,23 @@ Meteor.methods(
             groupKey: group
             name: field
         .fetch()
-        div = "#" + field+"_graph"
+
+        div = $("#" + field+"_"+group+"_graph").get(0)
+        console.log "before max / min"
         max_arr = item_list.map (item)->
             if item.name in groupable
                 maxing(item.data)
             else
                 item.data.max
         max = _.max(max_arr)
+        console.log max
         min_arr = item_list.map (item)->
             if item.name in groupable
                 mining(item.data)
             else
                 item.data.min
         min = _.min(min_arr)
+        console.log min
         for item in item_list
             Meteor.call("make_single_chart", [div, item, min, max])
 
