@@ -190,11 +190,25 @@
                         <option>{{this}}</option>
                     {{/each}}
                 </select>
-                Generate
-                {{num_graph}}
-                graphs
                 <div class="btn pull-right" id="chartBtn">
-                    Chart        
+                    BoxPlot/BarChart        
+                </div>
+            </div>
+            <div class="row offset1">
+                <b>View</b>
+                <select class="chosen" id="viewX" >
+                    {{#each fields1}}
+                        <option>{{this}}</option>
+                    {{/each}}
+                </select>
+                <b> And </b>
+                <select class="chosen" id="viewY">
+                    {{#each groups1}}
+                        <option>{{this}}</option>
+                    {{/each}}
+                </select>
+                <div class="btn pull-right" id="ScatterBtn">
+                    ScatterPlot       
                 </div>
             </div>
             {{#if waiting}}

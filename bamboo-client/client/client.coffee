@@ -236,6 +236,18 @@ if root.Meteor.is_client
         # call summarize_by_group
         Meteor.call('generate_groupable_fields')
         fields = Session.get('groupable_fields')
+    
+    root.Template.control_panel.fields1= ->
+        fields = Session.get('fields')
+        visible_fields = Session.get('visible_fields')
+        display = []
+        for item in visible_fields
+            display.push(item['field'])
+        display
+
+    root.Template.control_panel.groups1= ->
+        # call summarize_by_group
+        fields = Session.get('groupable_fields')
 
     root.Template.control_panel.num_graph= ->
         20
@@ -280,6 +292,29 @@ if root.Meteor.is_client
 
         "click #addNewGraphBtn": ->
             Session.set('addNewGraphFlag', false)
+    
+        "click #ScatterBtn": ->
+            group = $('#viewY').val()
+            view_field = $('#viewX').val()
+            if Session.get(view_field + '_' + group)
+                alert "Graph already exists"
+                return
+            Session.set(view_field + '_' + group, true)
+
+            frag = Meteor.ui.render( ->
+                return Template.graph({
+                    title: "Scatter Plot"
+                    field: view_field
+                    group:group
+                })
+            )
+            $(".graph_area")[0].appendChild(frag)
+
+            div = $("#" + view_field+"_"+group+"_graph").get(0)
+            console.log group
+            console.log view_field
+            console.log div 
+            drawScatterPlot(div) 
     }
 
     root.Template.control_panel.charting =->
