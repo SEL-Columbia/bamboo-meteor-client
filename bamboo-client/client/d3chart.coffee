@@ -81,7 +81,9 @@ barchart= (dataElement, div, min, max)->
     else
         str = "" + dataElement.name + " grouped by " + dataElement.groupKey
     Session.set("titles", "Bar Chart of " + str)
-    
+   
+    console.log dataElement
+
     name = dataElement.name
     data = data_massage(dataElement.data)
     font = 10
@@ -97,8 +99,8 @@ barchart= (dataElement, div, min, max)->
     bar_padding = _.max([name_max*font-bar_width,2])
     ###
     
-    width = 200
-    height = 150
+    width = 300
+    height = 200
     y_padding = 20
     x_padding = 20
     bar_padding = 2
@@ -115,11 +117,28 @@ barchart= (dataElement, div, min, max)->
                 .domain([0,max])
                 .range([height - y_padding,  y_padding])
 
-    ###
     x_scale = d3.scale.linear()
-                .domain([0,width])
-                .range([x_padding, width])
-    ###
+                .domain([0, data.length])
+                .range([x_padding, width - x_padding])
+
+    tick= 5
+    tick_num = tick
+    
+    linearr = []
+    for i in [1...(tick_num+1)]
+        linearr.push(height - y_padding - (height - 2*y_padding)/max * Math.floor(max/tick_num) * i)
+    linearr.push(y_padding)
+    console.log linearr
+
+    svg.selectAll("line")
+        .data(linearr)
+        .enter().append("line")
+        .style("stroke", "grey")
+        .style("stroke-width", "1px")
+        .attr("x1", x_padding)
+        .attr("x2", width - x_padding)
+        .attr("y1", (d) -> d)
+        .attr("y2", (d) -> d)
 
     svg.selectAll('rect')
         .data(data)
@@ -127,13 +146,17 @@ barchart= (dataElement, div, min, max)->
         .append('rect')
         .attr('x',(d,i)->
             #       x_scale i*(width/data.length)
-            x_padding + bar_padding + (width - x_padding) / data.length * i
+            w = (width-x_padding*2) / data.length - bar_padding
+            if ( w > 30 )
+               (w - 30)/2 +  x_padding + bar_padding + (width - 2*x_padding) / data.length * i
+            else
+                x_padding + bar_padding + (width - 2*x_padding) / data.length * i
         )
         .attr('y',(d)->
             y_scale d.value
         )
         .attr('width',(d)->
-            w = (width-x_padding) / data.length - bar_padding
+            w = (width-2*x_padding) / data.length - bar_padding
             if ( w > 30 )
                 w = 30
             w
@@ -141,10 +164,10 @@ barchart= (dataElement, div, min, max)->
         .attr('height',(d)->
             height - y_padding - y_scale d.value
         )
-        .style('fill', 'SeaGreen')
+        .style('fill', 'rgba(46, 139, 87, 0.7)')
         .on('mouseover', (d)->
             d3.select(this)
-                .style('fill','rgba(46, 139, 87, 0.7)')
+                .style('fill','seagreen')
                 #add the name of the bar
             posx = this.x.animVal.value + x_padding
             if posx + 100 > width
@@ -167,7 +190,7 @@ barchart= (dataElement, div, min, max)->
         .on('mouseout', ->
             d3.select(this.parentNode.lastChild).remove()
             d3.select(this)
-                .style('fill', 'SeaGreen')
+                .style('fill', 'rgba(46, 139, 87, 0.7)')
         )
 
     ###
@@ -205,6 +228,15 @@ barchart= (dataElement, div, min, max)->
         .attr("fill", "black")
     ###
 
+    svg.append("g")
+        .attr("transform", "translate(0, " + (height-y_padding) + ")")
+        .attr("fill", "none")
+        .attr("stroke", "black")
+        .attr("shape-rendering", "crispEdges")
+        .attr("font-family", "Helvetica, sans-serif")
+        .attr("font-size", "8px")
+        .call(d3.svg.axis().scale(x_scale).orient("bottom").ticks(data.length))
+
     svg.append("text")
         .text("Amount")
         .attr("x", "0")
@@ -216,7 +248,7 @@ barchart= (dataElement, div, min, max)->
     y_axis = d3.svg.axis()
                 .scale(y_scale)
                 .orient("left")
-                .ticks(5)
+                .ticks(tick)
 
     svg.append("g")
         .attr("transform", "translate(" + x_padding + ", 0)")

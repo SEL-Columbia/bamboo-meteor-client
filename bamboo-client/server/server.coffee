@@ -3,13 +3,29 @@ require = __meteor_bootstrap__.require
 request = require 'request'
 #bambooURL = 'http://localhost:8080'
 #bambooURL = 'http://bamboo.modilabs.org/'
-#bambooURL = 'http://bamboo.io/'
-bambooURL = 'http://starscream.modilabs.org:8080/'
+bambooURL = 'http://bamboo.io/'
+#bambooURL = 'http://starscream.modilabs.org:8080/'
 datasetsURL = bambooURL + '/datasets'
 summaryURLf = (id,group) -> datasetsURL + '/' + id + '/summary' +
     if group then '?group=' + group else ''
 
 schemaURLf = (id) -> datasetsURL + '/' + id + '/info'
+
+###########PUBLISHES##########################
+Meteor.publish "datasets", (url)->
+    Datasets.find
+        url:url
+
+Meteor.publish "schemas", (url)->
+    Schemas.find
+        datasetURL:url
+
+Meteor.publish "summaries", (url,group, view)->
+    Summaries.find
+        datasetURL:url
+        groupVal:group
+        name:view
+        
 
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
@@ -24,27 +40,21 @@ Meteor.methods(
                     method: 'POST'
                     form: {url: url}
                 request post_options, (e, b, response) ->
-                    Fiber(->
-                        if b.statusCode is 200
-                            r = JSON.parse(response)
-                            if r.error is undefined
+                    if b.statusCode is 200
+                        r = JSON.parse(response)
+                        if r.error is undefined
+                            Fiber(->
                                 unless Datasets.findOne({url: url})
                                     Datasets.insert
                                         bambooID: r.id
                                         url: url
                                         cached_at: Date.now()
                                     Meteor.call('insert_schema', url)
-                            else
-                                console.log "error message: " + r.error
-                                Meteor.publish "message", ->
-                                    Message
-                                        message:"error message: " + r.error
+                            ).run()
                         else
-                            console.log "bad status" + b.statusCode
-                            Meteor.publish "message", ->
-                                Message
-                                    message:"bad status: " + b.status +"\nYou have ill formated csv file"
-                    ).run()
+                            console.log "error message: " + r.error
+                    else
+                        console.log "bad status" + b.statusCode
 
     insert_schema: (datasetURL) ->
         dataset = Datasets.findOne(url: datasetURL)
@@ -123,4 +133,28 @@ Meteor.methods(
                                                 datasetURL: datasetURL
                                             Fiber( -> Summaries.insert res).run()
                 )
+
+    summarized_by_total_non_recurse:(obj)->
+        [datasetURL, groupkey] = obj
+        dataset = Datasets.findOne(url: datasetURL)
+        # check if dataset valid
+        if !(dataset)
+            console.log datasetURL, groupkey
+            console.log "no dataset yet, get your summary dataset first"
+            #TODO:publish this error message to the front
+        else
+            datasetID = dataset._id
+            bambooID = dataset.bambooID
+            if Summaries.findOne(datasetID: datasetID, groupKey: groupkey)
+                console.log("summary with datasetID " + datasetID +
+                    " and groupkey " + groupkey + " is already cached")
+                #TODO: would we want to push this to client?
+            else
+                groupKey = groupkey
+                request.get summaryURLf(bambooID, groupkey), (error, body, response) ->
+                    if error
+                        console.log error
+                    else
+                        obj = JSON.parse(response)
+                        Fiber(-> Norecurse.insert obj).run()
 )

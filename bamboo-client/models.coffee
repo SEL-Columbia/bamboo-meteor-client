@@ -2,6 +2,8 @@
 Datasets = new Meteor.Collection('datasets')
 Summaries = new Meteor.Collection('summaries')
 Schemas = new Meteor.Collection('schema')
+Message = new Meteor.Collection('message')
+Norecurse = new Meteor.Collection('norecurse')
 
 
 ######## UTILS ###########

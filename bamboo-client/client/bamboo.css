@@ -78,4 +78,13 @@ input{
     height:20px;
 }
 
+.brand {
+    font-size: 15px;
+}
+
+.logoImg {
+    width: 20px;
+    height:20px;
+    padding-top: 8px;
+}
 

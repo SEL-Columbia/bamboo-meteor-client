@@ -3,13 +3,25 @@ bambooUrl = "/"
 observationsUrl = bambooUrl + "datasets"
 
 
-############ UI LOGIC ############################
+#############SUBSCRIBE#######################
 if root.Meteor.is_client
-    
+    Meteor.startup ->
+        Meteor.autosubscribe ->
+            url = Session.get("currentDatasetURL")
+            group = Session.get("currentGroup")
+            view = Session.get("currentView")
+            Meteor.subscribe "datasets", url
+            Meteor.subscribe "schemas", url
+            Meteor.subscribe "summaries", url, group, view
+         
+############ UI LOGIC ############################
     #every function can be accessed by the template it is defined under
     ##################BODY RENDER#####################
     root.Template.body_render.show =->
         Session.get('currentDatasetURL') and Session.get('fields')
+
+    root.Template.error_message.message =->
+        "hi"
 
     ###################URL-Entry###########################
     root.Template.url_entry.events = "click .btn": ->
@@ -23,7 +35,7 @@ if root.Meteor.is_client
         if !Datasets.findOne(url: url)
             console.log "caching server side.."
             #todo: add async to serize register & get_fields
-            Meteor.call('register_dataset', url, ->
+            Meteor.call('register_dataset', url, ()->
                 interval = setInterval(->
                     #Meteor.call("get_fields", url)
                     #if Session.get('fields')
@@ -48,6 +60,9 @@ if root.Meteor.is_client
     root.Template.introduction.num_cols =->
         Session.get('fields').length
 
+    root.Template.introduction.url =->
+        Session.get('currentDatasetURL')
+
     root.Template.introduction.schema =->
         schema = Session.get('schema')
         _.values schema
@@ -57,12 +72,13 @@ if root.Meteor.is_client
         arr = _.values schema
         arr.slice(0,5)
 
-    root.Template.introduction.events= {
+
+    root.Template.introduction.events=
         "click #moreBtn": ->
             Session.set('show_all', true)
         "click #hideBtn": ->
             Session.set('show_all', false)
-    }
+    
 
     root.Template.introduction.long =->
         Session.get('fields').length > 5
@@ -113,6 +129,7 @@ if root.Meteor.is_client
 
             url = Session.get('currentDatasetURL')
             Meteor.call("summarize_by_group",[url,group])
+            #Meteor.call("summarized_by_total_non_recurse",[url,group])
             Session.set('currentGroup', group)
             Session.set('currentView', view_field)
             Session.set('waiting', true)

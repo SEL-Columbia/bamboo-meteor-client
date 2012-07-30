@@ -13,6 +13,10 @@
         <div id="d3select"></div>
     </div>
 </body>
+
+<template name="error_message">
+{{message}}
+</template>
             
 <template name="body_render">
 {{#if show}}
@@ -34,6 +38,9 @@
     <div class='navbar navbar-fixed-top url'>
         <div class="navbar-inner">
             <div class="container">
+                <div class="pull-left"> <a class="brand" href="http://bamboo.io/"><b> Bamboo.io</b> </a>
+                    <img class="logoImg" src="logo.svg"/>  
+                </div>
                 <div class="pull-right">
                     <input id="dataSourceURL" type="text"
                             value="{{current_dataset_url}}"></input>
@@ -60,6 +67,9 @@
 
 <template name="processing">
 {{#if ready}}
+    <div class="error_message">
+        {{> error_message}}
+    </div>
     <div class="well span8 offset1">
         <h1>Preparing your dataset, just a split second..</h1>
     <img src="drop.gif">
@@ -69,12 +79,18 @@
 
 <template name="introduction">
 <div class="well span8 offset1">
-    <p>You are accessing the dataset from {{url}}</p> 
-    <p>There are {{num_cols}} fields you can choose to chart</p>
+    <div class="page-header"> 
+        <h3> Introducion about Your File </h3> 
+    </div>
+    <p><b>You</b> are accessing the dataset from <a href="{{url}}"> {{url}}</a>.</p> 
+    <p><b>{{num_cols}} view fields</b> in the dataset you can choose to chart : </p>
     {{#if show_all}}
+        <p>
         {{#each schema}}
-        <p><a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a></p>
+        <a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a>
+        ,&nbsp&nbsp&nbsp&nbsp
         {{/each}}
+        </p>
         {{#if long}}
             <div class="btn pull-right" id="hideBtn">
                 hide
@@ -82,13 +98,17 @@
         {{/if}}
     {{else}}
         <p> show 5 entries, or click the button to show all </p>
+        <p>
         {{#each schema_less}}
-        <p><a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a></p>
+        <a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a>
+        ,&nbsp&nbsp&nbsp&nbsp
         {{/each}}
+        </p>
         <div class="btn pull-right" id="moreBtn">
             more      
         </div>
     {{/if}}
+    <p> ---- : Field with * is groupable field.</p>
 </div>
 </template>
 
@@ -139,10 +159,12 @@
  
 <template name="graph">
 <div class="well span8 offset1" id="{{field}}_{{group}}_block">
-    <div class="pull-right" id="{{field}}_{{group}}_btn">
-        <img class="pointer deletionBtn" src="deletion.svg"></img>
-    </div>
+    <div class="page-header"> 
+        <div class="pull-right" id="{{field}}_{{group}}_btn">
+            <img class="pointer deletionBtn" src="deletion.svg"></img>
+        </div>
         <h3> {{title}} </h3>
+    </div>
         <div class="d3_graph" id="{{field}}_{{group}}_graph"></div>
 </div>
 </template>
