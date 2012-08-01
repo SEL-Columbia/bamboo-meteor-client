@@ -78,6 +78,10 @@ input{
     height:20px;
 }
 
+.downloadBtn {
+    width:20px;
+    height:20px;
+}
 .brand {
     font-size: 15px;
 }

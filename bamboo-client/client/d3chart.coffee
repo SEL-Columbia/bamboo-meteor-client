@@ -278,13 +278,13 @@ boxplot= (dataElement, div, min, max)->
     display = ['min','25%','50%','75%','max']
     
     width = 200
-    height = width*1.5
+    height = width * 1.5
 
     console.log div
     svg = d3.select(div)
             .append('svg:svg')
-            .attr('width', width)
-            .attr('height',height)
+            .attr('width', 200)
+            .attr('height', 300)
             
     y_scale = d3.scale.linear()
 		        .domain([min, max])
