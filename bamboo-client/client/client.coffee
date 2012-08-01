@@ -13,6 +13,7 @@ if root.Meteor.is_client
             Meteor.subscribe "datasets", url
             Meteor.subscribe "schemas", url
             Meteor.subscribe "summaries", url, group, view
+            return
          
 ############ UI LOGIC ############################
     #every function can be accessed by the template it is defined under
@@ -71,7 +72,6 @@ if root.Meteor.is_client
         schema = Session.get('schema')
         arr = _.values schema
         arr.slice(0,5)
-
 
     root.Template.introduction.events=
         "click #moreBtn": ->

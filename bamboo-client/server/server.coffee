@@ -23,10 +23,10 @@ Meteor.publish "schemas", (url)->
 Meteor.publish "summaries", (url,group, view)->
     Summaries.find
         datasetURL:url
-        groupVal:group
+        groupKey:group
         name:view
-        
 
+#########METHODS################################
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
     register_dataset: (url) ->
