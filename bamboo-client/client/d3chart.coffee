@@ -269,7 +269,7 @@ boxplot= (dataElement, div, min, max)->
         display_value = dataElement.data.min
         dataElement.data = {}
         dataElement.data[display_name]=display_value
-        return barchart(dataElement, div, min, max)
+        return nvd3BarChart(dataElement, div)
     
 
     y_padding = 20
@@ -283,8 +283,7 @@ boxplot= (dataElement, div, min, max)->
     console.log div
     svg = d3.select(div)
             .append('svg:svg')
-            .attr('width', 200)
-            .attr('height', 300)
+            .attr('class', 'boxPlotSVG')
             
     y_scale = d3.scale.linear()
 		        .domain([min, max])

@@ -182,10 +182,18 @@ if root.Meteor.is_client
             field = this.field
             group = this.group
             divstr = '#' + field + '_' + group + '_graph'
-            svg = $(divstr).eq(0).html()
-            svg = svg.substring(0, 5) +
-                'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ' +
-                svg.substring(5)
+            div = $(divstr)
+            if div.children().length == 1
+                svg = "<html><body>"
+                svg = svg + div.eq(0).html()
+                svg = svg + "</bdoy></html>"
+            else
+                div.eq(0).children().each (i)->
+                    $(this).attr('y', i*300)
+                svg = "<html><body>"
+                str = div.eq(0).html()
+                svg = svg + str
+                svg = svg + '</body></html>'
             filename = field + '_' + group + '_graph'
             loadScripts = []
             unless BlobBuilder?
@@ -201,7 +209,7 @@ if root.Meteor.is_client
                     alert("WTF")
                 blob = new BlobBuilder
                 blob.append(svg)
-                output = blob.getBlob("image/svg+xml;charset=" + document.characterSet)
+                output = blob.getBlob("text/html;charset=" + document.characterSet)
                 saveAs(output, filename)
             )
 

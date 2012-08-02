@@ -92,3 +92,13 @@ input{
     padding-top: 8px;
 }
 
+.boxPlotSVG {
+    width: 200px;
+    height: 300px;
+}
+
+.barChartSVG {
+    width: 400px;
+    height: 250px;
+}
+
