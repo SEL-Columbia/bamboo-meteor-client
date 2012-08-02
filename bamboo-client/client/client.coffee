@@ -15,6 +15,11 @@ if root.Meteor.is_client
             Meteor.subscribe "summaries", url, group, view
             return
          
+    cleanKeys= (obj)->
+        for key, val of obj
+            if key.match(/\./)
+                key.replace(/\./,"_")
+            cleanKeys(val)
 ############ UI LOGIC ############################
     #every function can be accessed by the template it is defined under
     ##################BODY RENDER#####################

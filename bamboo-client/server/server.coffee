@@ -26,9 +26,11 @@ Meteor.publish "summaries", (url,group, view)->
         groupKey:group
         name:view
 
+            
 #########METHODS################################
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
+
     register_dataset: (url) ->
         if url is null
             console.log "null url! discard!"
@@ -41,7 +43,7 @@ Meteor.methods(
                     form: {url: url}
                 request post_options, (e, b, response) ->
                     if b.statusCode is 200
-                        r = JSON.parse(response)
+                        r = JSON.parse(cleanKeys(response))
                         if r.error is undefined
                             Fiber(->
                                 unless Datasets.findOne({url: url})
@@ -73,7 +75,7 @@ Meteor.methods(
                     if error
                         console.log error
                     else
-                        obj = JSON.parse(response)
+                        obj = JSON.parse(cleanKeys(response))
                         updateTime = obj['updated_at']
                         createTime = obj['created_at']
                         schema = obj['schema']
@@ -106,7 +108,7 @@ Meteor.methods(
                     if error
                         console.log error
                     else
-                        obj = JSON.parse(response)
+                        obj = JSON.parse(cleanKeys(response))
                         if groupKey is ""
                             for field of obj
                                 res=
