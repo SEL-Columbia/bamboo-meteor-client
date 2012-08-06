@@ -4,6 +4,14 @@ constants =
     #defaultURL : 'https://dl.dropbox.com/s/5mu9x13upanqpgy/file.csv?dl=1'
 Meteor.startup ->
     if root.Meteor.is_client
+        Meteor.autosubscribe ->
+            url = Session.get("currentDatasetURL")
+            group = Session.get("currentGroup")
+            view = Session.get("currentView")
+            Meteor.subscribe "datasets", url
+            Meteor.subscribe "schemas", url
+            Meteor.subscribe "summaries", url, group, view
+            return
         Meteor.defer(->
             $('.chosen').chosen()
         )

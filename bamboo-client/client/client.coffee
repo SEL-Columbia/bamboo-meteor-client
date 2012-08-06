@@ -5,15 +5,7 @@ observationsUrl = bambooUrl + "datasets"
 
 #############SUBSCRIBE#######################
 if root.Meteor.is_client
-    Meteor.startup ->
-        Meteor.autosubscribe ->
-            url = Session.get("currentDatasetURL")
-            group = Session.get("currentGroup")
-            view = Session.get("currentView")
-            Meteor.subscribe "datasets", url
-            Meteor.subscribe "schemas", url
-            Meteor.subscribe "summaries", url, group, view
-            return
+    #Meteor.startup ->
          
     cleanKeys= (obj)->
         for key, val of obj
