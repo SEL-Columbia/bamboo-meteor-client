@@ -28,4 +28,5 @@ if Meteor.is_client
                 Meteor.call("get_fields",url)
                 
     app_router = new URLRouter
-    Backbone.history.start()
+    Backbone.history.start
+        pushState:true

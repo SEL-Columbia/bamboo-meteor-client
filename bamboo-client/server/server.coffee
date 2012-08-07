@@ -26,18 +26,17 @@ Meteor.publish "summaries", (url,group, view)->
         groupKey:group
         name:view
 
+Meteor.publish "message",->
+    Message.find
+
+
             
 #########METHODS################################
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
-    register_http: (url) ->
-        Meteor.http.call "POST", datasetsURL,
-            params:
-                url:url
-            ,(error, result)->
-                if result.statusCode is 200
-                    content = JSON.parse(result.content)
-                    console.log content.id
+
+    throw_error: ()->
+        throw new Meteor.Error(404,"error!")
 
     register_dataset: (url) ->
         if url is null
@@ -49,21 +48,27 @@ Meteor.methods(
                     params:
                         url:url
                     , (error, result)->
-                        if result.statusCode is 200
-                            r = JSON.parse(cleanKeys(result.content))
-                            if error is null
-                                Fiber(->
-                                    unless Datasets.findOne({url: url})
-                                        Datasets.insert
-                                            bambooID: r.id
-                                            url: url
-                                            cached_at: Date.now()
-                                        Meteor.call('insert_schema', url)
-                                ).run()
+                        if error is null
+                            if result.statusCode is 200
+                                r = JSON.parse(cleanKeys(result.content))
+                                if r.error
+                                    console.log "bamboo error message: " + r.error
+                                    throw new Meteor.Error 404, "WOW"
+                                else
+                                    Fiber(->
+                                        unless Datasets.findOne({url: url})
+                                            Datasets.insert
+                                                bambooID: r.id
+                                                url: url
+                                                cached_at: Date.now()
+                                            Meteor.call('insert_schema', url)
+                                    ).run()
                             else
-                                console.log "error message: " + error
+                                console.log "bad status" + result.statusCode
+                                throw new Meteor.Error 404, "WOW"
                         else
-                            console.log "bad status" + result.statusCode
+                            console.log "error message: " + error
+
 
     insert_schema: (datasetURL) ->
         dataset = Datasets.findOne(url: datasetURL)

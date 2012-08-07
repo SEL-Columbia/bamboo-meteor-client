@@ -33,7 +33,7 @@ if root.Meteor.is_client
         if !Datasets.findOne(url: url)
             console.log "caching server side.."
             #todo: add async to serize register & get_fields
-            Meteor.call('register_dataset', url, ()->
+            Meteor.call('register_dataset', url, (error, result)->
                 interval = setInterval(->
                     #Meteor.call("get_fields", url)
                     #if Session.get('fields')
