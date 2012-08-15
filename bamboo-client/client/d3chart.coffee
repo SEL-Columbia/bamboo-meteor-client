@@ -272,7 +272,7 @@ boxplot= (dataElement, div, min, max)->
         display_value = dataElement.data.min
         dataElement.data = {}
         dataElement.data[display_name]=display_value
-        return nvd3BarChart(dataElement, div)
+        return nvd3BarChart(dataElement, div, 0, max)
     
 
     y_padding_1 = 30

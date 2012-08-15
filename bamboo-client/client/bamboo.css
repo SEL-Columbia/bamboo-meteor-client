@@ -116,3 +116,11 @@ input{
     width: 320px;
     height: 270px;
 }
+
+.chart_control {
+    display:show;
+}
+
+#addNewGraphBtn {
+    display:none;
+}

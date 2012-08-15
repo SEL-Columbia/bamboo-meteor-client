@@ -108,6 +108,11 @@ if root.Meteor.is_client
     root.Template.control_panel.waiting=->
         Session.get('waiting')
 
+    root.Template.graph.waiting=->
+        Session.get('waiting')
+    root.Template.graph.hello=->
+        "hello"
+
     root.Template.control_panel.events= {
         "click #chartBtn": ->
             group = $('#group-by').val()
@@ -139,22 +144,27 @@ if root.Meteor.is_client
                     group: group
                 })
             )
+            #prepend graph area before the previous one
             $(".graph_area")[0].insertBefore(frag,$(".graph_area")[0].childNodes[0])
 
         "click #addNewGraphBtn": ->
-            Session.set('addNewGraphFlag', false)
+            $("#addNewGraphBtn").fadeOut("slow")
+            $(".chart_control").fadeIn("slow")
     }
 
     root.Template.control_panel.charting =->
         #todo: move summarize_by_group here?
         #todo: use async to serize sum & charting
+        Meteor.defer ->
+            $("#addNewGraphBtn").fadeIn("slow")
+            $(".chart_control").fadeOut("slow")
+        
         fieldInterval = setInterval(->
                 console.log "hardcore summary action"
                 summary = Summaries.findOne( {groupKey : Session.get('currentGroup')} )
                 if summary
                     Meteor.call('field_charting')
                     Session.set('waiting', false)
-                    Session.set('addNewGraphFlag', true)
                     clearInterval(fieldInterval)
             ,1000)
         ""
@@ -252,7 +262,7 @@ Meteor.methods(
             #nvd3BarChart(dataElement, div, 0, max)
             nvd3BarChart(dataElement, individual_div, 0, max)
         else
-            boxplot(dataElement,div,min,max)
+            boxplot(dataElement,individual_div,min,max)
 
 
 

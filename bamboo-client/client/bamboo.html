@@ -91,8 +91,8 @@
 
 <template name="control_panel">
 <div class="well span8 offset1">
-    {{#if active}}
-            <div class="page-header">
+    <div class="chart_control">
+             <div class="page-header">
                 <h3>Graphing Control Panel</h3>
             </div>
             <div class="row offset1">
@@ -117,14 +117,13 @@
                 </div>
             </div>
             {{#if waiting}}
-                {{>waiting_graph}}
                 {{charting}}
+                {{>waiting_graph}}
             {{/if}}
-    {{else}}
-        <div class="btn btn-large pull-right" id="addNewGraphBtn">
-            <h3>Add a New Graph</h3>
-        </div>
-    {{/if}}
+    </div>
+    <div class="btn btn-large pull-right" id="addNewGraphBtn">
+        <h3>Add a New Graph</h3>
+    </div>
 </div>
 </template>
 
