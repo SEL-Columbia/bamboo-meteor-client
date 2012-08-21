@@ -157,3 +157,7 @@ input{
     margin-top:5px;
     font-size:12px;
 }
+
+.icon-remove {
+    opacity:0.5;
+}

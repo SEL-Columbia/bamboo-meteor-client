@@ -94,7 +94,10 @@ if root.Meteor.is_client
             $('#control_logic').slideDown('fast')
 
     root.Template.control_panel.events=
-        "click .chartBtn": (event)->
+        "click .closeBtn": ->
+            $('#control_panel').hide()
+
+        "click .chartBtn": ->
             waiting_graph = $('#waiting_graph')
             $("#control_panel").hide()
             waiting_graph.show()
@@ -138,8 +141,8 @@ if root.Meteor.is_client
                     if summary
                         waiting_graph.hide()
                         $('#graph_panel').append(frag)
+                        $('[rel=tooltip]').tooltip()
                         Meteor.call('field_charting')
-                        Session.set('waiting', false)
                         clearInterval(fieldInterval)
                 ,1000)
                 ""

@@ -118,6 +118,9 @@
                     {{toggle}}
                 {{/if}}
                 <div id="chart_control">
+                    <div class="pointer closeBtn pull-right">
+                        <i class="icon-remove"></i>
+                    </div>
                     <div class="page-header">
                         <h3>Create a New Chart</h3>
                     </div>
@@ -139,7 +142,7 @@
                             </select>
                         </p>
                         <div class="btn pull-right chartBtn" id="{{number}}">
-                            Chart
+                            <h3>Chart</h3>
                         </div>
                     </div>
                 </div>
@@ -161,9 +164,10 @@
     <div class="well span8 offset1">
         <div class="page-header"> 
             <div class="pull-right" id="{{field}}_{{group}}_btn">
-                <div class="btn pointer downloadBtn"><img src="download-icon.svg" id="download_btn_img"></img>Download Chart</div>
-                &nbsp
-                <div class="btn pointer deletionBtn" src="deletion.svg">Close</div>
+                <div class="btn pointer downloadBtn" data-original-title="Download Chart" rel="tooltip"><img src="download-icon.svg" id="download_btn_img"></img></div>
+                <div class="btn pointer deletionBtn" data-original-title="Remove Chart" rel="tooltip">
+                    <i class="icon-remove"></i>
+                </div>
             </div>
             <h3 id="graph_title">{{title}}<b>{{field_name}}</b>{{#if group}} grouped by <b>{{group_name}}</b>{{/if}}</h3>
         </div>

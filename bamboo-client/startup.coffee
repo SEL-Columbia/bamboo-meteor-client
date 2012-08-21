@@ -15,6 +15,7 @@ Meteor.startup ->
         Meteor.defer(->
             $('.chosen').chosen()
         )
+        
 ###
         Session.set('currentDatasetURL', constants.defaultURL)
         Session.set('currentGroup', '')
