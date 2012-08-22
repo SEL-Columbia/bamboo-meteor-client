@@ -155,6 +155,7 @@ if root.Meteor.is_client
             divstr = '#'+field+'_'+group+'_block'
             Session.set(field+'_'+group, false)
             $(divstr).remove()
+            $('.tooltip').remove()
         "click .downloadBtn": ->
             field = this.field
             group = this.group
