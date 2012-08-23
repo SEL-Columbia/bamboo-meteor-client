@@ -43,6 +43,8 @@ nvd3BarChart = (dataElement, div, min, max) ->
             .showValues(false)
             .forceY([min, max])
 
+        chart.yAxis.tickFormat(d3.format(',d'))
+
         svg = d3.select(div)
             .append("svg")
             .attr("class", "barChartSVG")
