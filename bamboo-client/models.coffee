@@ -4,6 +4,7 @@ Summaries = new Meteor.Collection('summaries')
 Schemas = new Meteor.Collection('schema')
 Message = new Meteor.Collection('message')
 Norecurse = new Meteor.Collection('norecurse')
+Charts = new Meteor.Collection('charts')
 
 
 ######## UTILS ###########

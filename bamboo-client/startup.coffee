@@ -6,11 +6,14 @@ Meteor.startup ->
     if root.Meteor.is_client
         Meteor.autosubscribe ->
             url = Session.get("currentDatasetURL")
+            user = Session.get("currentUser")
             group = Session.get("currentGroup")
             view = Session.get("currentView")
             Meteor.subscribe "datasets", url
             Meteor.subscribe "schemas", url
             Meteor.subscribe "summaries", url, group, view
+            if user
+                Meteor.subscribe "charts", url, user
             return
         Meteor.defer(->
             $('.chosen').chosen()
