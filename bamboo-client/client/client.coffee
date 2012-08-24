@@ -137,12 +137,15 @@ if root.Meteor.is_client
             Session.set("first_graph", false)
             Meteor.defer ->
                 fieldInterval = setInterval(->
-                    summary = Summaries.findOne( {groupKey : Session.get('currentGroup')} )
+                    summary = Summaries.find().fetch()
                     if summary
                         waiting_graph.hide()
                         $('#graph_panel').append(frag)
                         $('[rel=tooltip]').tooltip()
-                        Meteor.call('field_charting')
+                        url = Session.get("currentDatasetURL")
+                        user = Session.get("currentUser")
+                        Meteor.call("insert_chart",[url,user,view_field,group,summary])
+                        Meteor.call('field_charting', view_field, group)
                         clearInterval(fieldInterval)
                 ,1000)
                 ""
@@ -150,10 +153,13 @@ if root.Meteor.is_client
     #########GRAPH###############################
     root.Template.graph.events =
         "click .deletionBtn": ->
+            url = Session.get("currentDatasetURL")
+            user = Session.get("currentUser")
             field = this.field
             group = this.group
             divstr = '#'+field+'_'+group+'_block'
             Session.set(field+'_'+group, false)
+            Meteor.call("remove_chart",[url, user, field, group])
             $(divstr).remove()
             $('.tooltip').remove()
         "click .downloadBtn": ->
@@ -245,12 +251,36 @@ Meteor.methods(
         else
             boxplot(dataElement,individual_div,min,max)
 
-
-
-    field_charting: ->
+    field_list_charting: (field, group, item_list) ->
         url = Session.get("currentDatasetURL")
-        group = Session.get("currentGroup") ? "" #some fallback
-        field = Session.get("currentView")
+        user = Session.get("currentUser")
+        #group = Session.get("currentGroup") ? "" #some fallback
+        #field = Session.get("currentView")
+        groupable = Session.get("groupable_fields")
+
+        div = $("#" + field + "_" + group + "_graph").get(0)
+        max_arr = item_list.map (item)->
+            if item.name in groupable
+                maxing(item.data)
+            else
+                item.data.max
+        max = _.max(max_arr)
+        min_arr = item_list.map (item)->
+            if item.name in groupable
+                mining(item.data)
+            else
+                item.data.min
+        min = _.min(min_arr)
+        for item in item_list
+            Meteor.call("make_single_chart", [div, item, min, max])
+
+
+
+    field_charting: (field, group) ->
+        url = Session.get("currentDatasetURL")
+        user = Session.get("currentUser")
+        #group = Session.get("currentGroup") ? "" #some fallback
+        #field = Session.get("currentView")
         groupable = Session.get("groupable_fields")
         item_list = Summaries.find
             datasetURL: url
@@ -273,6 +303,7 @@ Meteor.methods(
         min = _.min(min_arr)
         for item in item_list
             Meteor.call("make_single_chart", [div, item, min, max])
+
 
 
     get_fields:(url)->

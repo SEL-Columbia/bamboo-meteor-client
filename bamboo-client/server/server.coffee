@@ -26,10 +26,42 @@ Meteor.publish "summaries", (url,group, view)->
         groupKey:group
         name:view
 
+Meteor.publish "charts", (url,user)->
+    Charts.find
+        url:url
+        user:user
+
             
 #########METHODS################################
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
+
+    insert_chart: (obj)->
+        [url,user,field,group,item_list] = obj
+        chart =
+            url:url
+            user:user
+            field:field
+            group:group
+            summary:item_list
+        if not Charts.findOne(chart)
+            console.log "user: ", user, " added charts of", field, group
+            Fiber(->
+                Charts.insert(chart)
+            ).run()
+
+    remove_chart: (obj)->
+        [url,user,field,group] = obj
+        chart =
+            url:url
+            user:user
+            field:field
+            group:group
+        if Charts.findOne(chart)
+            console.log "user: ", user, " remove charts of", field, group
+            Fiber(->
+                Charts.remove(chart)
+            ).run()
 
     register_dataset: (url) ->
         if (url is null) or (url is "")
@@ -147,7 +179,6 @@ Meteor.methods(
                                                 datasetID: datasetID
                                                 datasetURL: datasetURL
                                             Fiber( -> Summaries.insert res).run()
-
     summarized_by_total_non_recurse:(obj)->
         [datasetURL, groupkey] = obj
         dataset = Datasets.findOne(url: datasetURL)
