@@ -343,61 +343,77 @@ boxplot= (dataElement, div, min, max)->
         .attr("font-size", font.toString()+"px")
         .attr("fill","black")
 
+    # red body of boxplot
+    svg.append("rect")
+        .attr("x", width / 3)
+        .attr("y", y_scale(data["75%"]))
+        .attr("width", width / 3)
+        .attr("height", y_scale(data["25%"]) - y_scale(data["75%"]))
+        .style("fill", "rgba(250, 128, 114, 0.7)")
+    
+    # black line -- first quartile marker
     svg.append("line")
-        .style("stroke", "rgba(46, 139, 87, 0.7)")
-        .style("stroke-width", "5px")
-        .attr("x1", width / 6)
-        .attr("y1", y_scale(data["50%"]))
-        .attr("x2", width / 6 * 5)
-        .attr("y2", y_scale(data["50%"]))
-
-    svg.append("line")
-        .style("stroke", "black")
+        .style("stroke", "grey")
         .style("stroke-width", "4px")
-        .attr("x1", width / 4)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data["25%"]))
-        .attr("x2", width / 4 * 3)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data["25%"]))
 
+    # black line -- third quartile marker
     svg.append("line")
-        .style("stroke", "black")
+        .style("stroke", "grey")
         .style("stroke-width", "4px")
-        .attr("x1", width / 4)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data["75%"]))
-        .attr("x2", width / 4 * 3)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data["75%"])) 
     
+    # black line -- from min to first quartile
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "3px")
         .attr("x1", width / 2)
         .attr("y1", y_scale(data.min))
         .attr("x2", width / 2)
+        .attr("y2", y_scale(data["25%"]))
+
+    # black line -- from third quartile to max
+    svg.append("line")
+        .style("stroke", "black")
+        .style("stroke-width", "3px")
+        .attr("x1", width / 2)
+        .attr("y1", y_scale(data["75%"]))
+        .attr("x2", width / 2)
         .attr("y2", y_scale(data.max))
 
+    # black line -- min marker
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "1px")
-        .attr("x1", width / 6 * 2)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data.min))
-        .attr("x2", width / 6 * 4)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data.min))
    
+    # black line -- max marker
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "1px")
-        .attr("x1", width / 6 * 2)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data.max))
-        .attr("x2", width / 6 * 4)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data.max))
-
-    svg.append("rect")
-        .attr("x", width / 4)
-        .attr("y", y_scale(data["75%"]))
-        .attr("width", width / 2)
-        .attr("height", y_scale(data["25%"]) - y_scale(data["75%"]))
-        .style("fill", "rgba(250, 128, 114, 0.7)")
     
+    # green line -- median marker
+    svg.append("line")
+        .style("stroke", "rgb(46, 139, 87)")
+        .style("stroke-width", "2px")
+        .attr("x1", width * (1/4))
+        .attr("y1", y_scale(data["50%"]))
+        .attr("x2", width * (3/4))
+        .attr("y2", y_scale(data["50%"]))
+
     svg.append("g")
         .attr("transform", "translate(" + width / 6  + ", 0)")
         .attr("fill", "none")
