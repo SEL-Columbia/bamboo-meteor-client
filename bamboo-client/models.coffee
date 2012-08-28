@@ -6,6 +6,10 @@ Message = new Meteor.Collection('message')
 Norecurse = new Meteor.Collection('norecurse')
 Charts = new Meteor.Collection('charts')
 
+if Meteor.is_server
+    upsert = (collection, el) ->
+        if not collection.findOne(el)
+            collection.insert(el)
 
 ######## UTILS ###########
 makeTitle = (slug) ->

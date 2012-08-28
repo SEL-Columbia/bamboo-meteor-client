@@ -163,7 +163,7 @@ Meteor.methods(
                                     name:field
                                     datasetID: datasetID
                                     datasetURL: datasetURL
-                                Fiber( -> Summaries.insert res).run()
+                                Fiber( -> upsert(Summaries, res)).run()
                         else
                             if obj["error"]
                                 console.log "error on group_by: "+obj['error']
