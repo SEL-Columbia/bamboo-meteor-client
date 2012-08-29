@@ -64,42 +64,37 @@ Meteor.methods(
             ).run()
 
     register_dataset: (url) ->
+        throw404 = (msg) ->
+            console.log msg
+            throw new Meteor.Error msg
+        throw404onerr = (msg, err) ->
+            throw404(msg) if err is not null
+
         if (url is null) or (url is "")
-            console.log "null url! discard!"
-            throw new Meteor.Error 404, "alex sucks"
-        else
-            console.log "server received url " + url
-            unless Datasets.findOne({url: url})
-                result = Meteor.http.call "POST", datasetsURL,
-                    params:
-                        url:url
-                try
-                    if result.error is null
-                        if result.statusCode is 200
-                            r = JSON.parse(cleanKeys(result.content))
-                            if r.error
-                                msg = "bamboo error message: " + r.error
-                                console.log msg
-                                throw new Meteor.Error 404, msg
-                            else
-                                Fiber(->
-                                    unless Datasets.findOne({url: url})
-                                        Datasets.insert
-                                            bambooID: r.id
-                                            url: url
-                                            cached_at: Date.now()
-                                        Meteor.call('insert_schema', url)
-                                ).run()
-                        else
-                            msg = "bad status" + result.statusCode
-                            console.log msg
-                            throw new Meteor.Error 404, msg
-                    else
-                        msg = "Meteor http error: "+ result.error
-                        console.log msg
-                        throw new Meteor.Error 404, msg
-                catch error
-                    throw error
+            throw404 "Meteor method `register_dataset` was called with empty url"
+
+        console.log "server received url " + url
+        unless Datasets.findOne({url: url})
+            result = Meteor.http.call "POST", datasetsURL,
+                params:
+                    url:url
+            try
+                throw404onerr(result.error, "Bad status " + result.statuscode)
+                if result.statusCode is not 200
+                    throw404("Meteor http error: " + result.error)
+                
+                r = JSON.parse(cleanKeys(result.content))
+                throw404onerr(r.error, "Bamboo error message: " + r.error)
+                Fiber(->
+                    unless Datasets.findOne({url: url})
+                        Datasets.insert
+                            bambooID: r.id
+                            url: url
+                            cached_at: Date.now()
+                        Meteor.call('insert_schema', url)
+                    ).run()
+            catch error
+                throw error
 
 
     insert_schema: (datasetURL) ->
