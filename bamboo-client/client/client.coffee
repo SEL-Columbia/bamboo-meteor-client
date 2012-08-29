@@ -231,7 +231,16 @@ Meteor.methods(
 
         Session.set('groupable_fields',fin)
     
-
+    make_stacked_bar_chart: (obj) ->
+        [div, item_list, min, max] = obj
+        if not item_list.length
+            throw "Stacked bar chart shouldn't be called for empty list"
+        dataElementSample = item_list[0]
+        $(div).append('<div id="' + div.id + '_' + dataElementSample.groupVal\
+            + '" class="individual_graph span1"></div>')
+        individual_div = $("#" + div.id + "_" + dataElementSample.groupVal).get(0)
+        console.log('stacked bar chart')
+        nvd3StackedBarChart(item_list, individual_div, min, max)
 
     make_single_chart: (obj) ->
         [div, dataElement, min, max] =obj
@@ -270,9 +279,15 @@ Meteor.methods(
                 item.data.min
         min = _.min(min_arr)
         
-        # Charting a group:
-        for item in item_list
-            Meteor.call("make_single_chart", [div, item, min, max])
+        # Charting a group of graphs -- special case for stacked bar chart
+        dataElements = _.pluck(item_list, 'data')
+        innerFields = _(dataElements).chain().map((d) -> _.keys(d)).flatten().uniq().value()
+        STACKED_BAR_THRESHOLD = 4
+        if dataElements.length and item_list[0].name in groupable and innerFields.length <= STACKED_BAR_THRESHOLD
+            Meteor.call("make_stacked_bar_chart", [div, item_list, min, max])
+        else
+            for item in item_list
+                Meteor.call("make_single_chart", [div, item, min, max])
 
     field_charting: (field, group) ->
         url = Session.get("currentDatasetURL")
