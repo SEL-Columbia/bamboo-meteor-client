@@ -68,8 +68,6 @@ if root.Meteor.is_client
             Session.set("first_graph", true)
         result = Session.get("first_graph")
         return result
-        
-
 
     root.Template.control_panel.fields= ->
         fields = Session.get('fields')
@@ -271,40 +269,19 @@ Meteor.methods(
             else
                 item.data.min
         min = _.min(min_arr)
+        
+        # Charting a group:
         for item in item_list
             Meteor.call("make_single_chart", [div, item, min, max])
 
-
-
     field_charting: (field, group) ->
         url = Session.get("currentDatasetURL")
-        user = Session.get("currentUser")
-        #group = Session.get("currentGroup") ? "" #some fallback
-        #field = Session.get("currentView")
-        groupable = Session.get("groupable_fields")
         item_list = Summaries.find
             datasetURL: url
             groupKey: group
             name: field
         .fetch()
-
-        div = $("#" + field + "_" + group + "_graph").get(0)
-        max_arr = item_list.map (item)->
-            if item.name in groupable
-                maxing(item.data)
-            else
-                item.data.max
-        max = _.max(max_arr)
-        min_arr = item_list.map (item)->
-            if item.name in groupable
-                mining(item.data)
-            else
-                item.data.min
-        min = _.min(min_arr)
-        for item in item_list
-            Meteor.call("make_single_chart", [div, item, min, max])
-
-
+        Meteor.call("field_list_charting", field, group, item_list)
 
     get_fields:(url)->
         fin = []
