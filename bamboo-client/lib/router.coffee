@@ -48,7 +48,7 @@ if Meteor.is_client
                         else
                             title = "Box Plot of "
                         console.log "output the title: " + title
-                        frag = Meteor.ui.render( ->
+                        frag = Meteor.render( ->
                             return Template.graph({
                                 title: title
                                 field: chart.field

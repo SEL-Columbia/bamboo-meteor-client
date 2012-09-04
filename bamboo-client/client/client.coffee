@@ -124,7 +124,7 @@ if root.Meteor.is_client
                 title = "Bar Chart of "
             else
                 title = "Box Plot of "
-            frag = Meteor.ui.render( ->
+            frag = Meteor.render( ->
                 return Template.graph({
                     title: title
                     field: view_field
@@ -153,6 +153,7 @@ if root.Meteor.is_client
     #########GRAPH###############################
     root.Template.graph.events =
         "click .deletionBtn": ->
+            console.log "hello"
             url = Session.get("currentDatasetURL")
             user = Session.get("currentUser")
             field = this.field
