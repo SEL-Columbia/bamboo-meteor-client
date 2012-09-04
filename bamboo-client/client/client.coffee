@@ -153,7 +153,6 @@ if root.Meteor.is_client
     #########GRAPH###############################
     root.Template.graph.events =
         "click .deletionBtn": ->
-            console.log "hello"
             url = Session.get("currentDatasetURL")
             user = Session.get("currentUser")
             field = this.field
