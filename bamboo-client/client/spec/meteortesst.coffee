@@ -14,30 +14,41 @@ load_test=->
                 expect(h1.text()).toEqual("Preparing your dataset, just a split second..")
 
         #SESSION######################################
-        Meteor.call('register_dataset', testing_url, (error, result)->
-            if error
-                alert error.reason
-            interval = setInterval(->
-                if Schemas.findOne(datasetURL: testing_url)
-                    console.log "booya"
-                    Meteor.call("get_fields", testing_url)
-                    ##testing####################
-                    describe "database registration", ->
-                        it "should have a dataset object", ->
-                            dataset = Datasets.findOne()
-                            expect(dataset.url).toEqual(testing_url)
-                        it "should have a schema object", ->
-                            schema = Schemas.findOne()
-                            expect(schema.datasetURL).toEqual(testing_url)
+        describe "test after dataset register", ->
+            it "should have datebase registered and all dom element", ->
+                runs(->
+                    Meteor.call('register_dataset', testing_url, (error, result)->
+                        if error
+                            alert error.reason
+                        interval = setInterval(->
+                            if Schemas.findOne(datasetURL: testing_url)
+                                console.log "booya"
+                                Meteor.call("get_fields", testing_url)
+                                clearInterval(interval)
 
-                    describe "getting fields", ->
-                        it "should have all the fields", ->
-                            fileds = Session.get("fields")
-                            expect(fields).toEqual(["grade","sex","name","income"])
+                        ,300)
+                    )
+                )
+                waits(2000)
+                runs(->
+                    dataset = Datasets.findOne()
+                    expect(dataset.url).toEqual(testing_url)
+
+                    schema = Schemas.findOne()
+                    expect(schema.datasetURL).toEqual(testing_url)
+
+                    fields = Session.get("fields")
+                    expect(fields).toEqual(["grade","sex","name","income"])
+                    
+                    control_panel = $("#control_panel")
+                    expect(control_panel).toBeDefined()
+
+                    chosen = $(".chosen")
+                    expect(chosen).toBeDefined()
+
+                    chartBtn = $(".chartBtn")
+                    expect(chartBtn.text()).toMatch(/Chart/)
+                )
 
 
 
-                    clearInterval(interval)
-            ,300)
-        )
-                
