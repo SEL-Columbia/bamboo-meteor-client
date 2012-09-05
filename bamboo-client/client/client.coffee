@@ -124,7 +124,7 @@ if root.Meteor.is_client
                 title = "Bar Chart of "
             else
                 title = "Box Plot of "
-            frag = Meteor.render( ->
+            frag = Meteor.ui.render( ->
                 return Template.graph({
                     title: title
                     field: view_field
@@ -133,7 +133,6 @@ if root.Meteor.is_client
                     group_name: makeTitle(group)
                 })
             )
-            
             Session.set("first_graph", false)
             Meteor.defer ->
                 fieldInterval = setInterval(->
@@ -190,7 +189,7 @@ if root.Meteor.is_client
                 alert('Error loading scripts')
             ).done( ()->
                 if !BlobBuilder?
-                    alert("WTF")
+                    alert("No BlobBuilder.. cannot download")
                 blob = new BlobBuilder
                 blob.append(svg)
                 output = blob.getBlob("text/html;charset=" + document.characterSet)
