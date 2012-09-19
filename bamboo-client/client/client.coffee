@@ -228,7 +228,9 @@ Meteor.methods(
             #no underscore prefix
             if not item.match /^_.*/
                 if schema[item]['olap_type'] == 'dimension'
-                    fin.push(item)
+                    #restrict cardinality to < 30
+                    if schema[item]['cardinality'] < CARDINAL_LIMIT
+                        fin.push(item)
 
         Session.set('groupable_fields',fin)
     
