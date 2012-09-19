@@ -59,6 +59,7 @@ nvd3BarChart = (dataElement, div, min, max) ->
             .attr("font-size", "15px")
             .attr("font-weight", "bold")
 
+        # show the graph, with a slight animation
         svg.datum(dataset)
             .transition().duration(500)
             .call(chart)
