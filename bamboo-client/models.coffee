@@ -19,3 +19,6 @@ makeTitle = (slug) ->
 cleanKeys=(str)->
     str.replace /\"([^\"]*)\"\:/g, (fstr)->
         fstr.replace(/\./g, "_")
+
+######## CONSTANTS #######
+CARDINAL_LIMIT = 30
