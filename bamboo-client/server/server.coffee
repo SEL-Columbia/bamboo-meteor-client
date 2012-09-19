@@ -6,8 +6,9 @@ request = require 'request'
 bambooURL = 'http://bamboo.io'
 #bambooURL = 'http://starscream.modilabs.org:8080/'
 datasetsURL = bambooURL + '/datasets'
+#TODO: change select to dynamic
 summaryURLf = (id,group) -> datasetsURL + '/' + id + '/summary' +
-    if group then '?group=' + group else ''
+    '?select=all' + if group then '&group=' + group else ''
 
 schemaURLf = (id) -> datasetsURL + '/' + id + '/info'
 
@@ -105,7 +106,8 @@ Meteor.methods(
     insert_schema: (datasetURL) ->
         dataset = Datasets.findOne(url: datasetURL)
         if !(dataset)
-            console.log "no dataset yet, get your schema dataset first"
+            msg = "no dataset yet, get your schema dataset first"
+            throw new Meteor.Error 404,msg
         else
             datasetID = dataset._id
             bambooID = dataset.bambooID
@@ -120,6 +122,7 @@ Meteor.methods(
                     console.log schemaURLf(bambooID)
                     if not(error is null)
                         console.log error
+                        throw new Meteor.Error 404, errormsg
                     else
                         obj = JSON.parse(cleanKeys(result.content))
                         updateTime = obj['updated_at']
@@ -151,7 +154,7 @@ Meteor.methods(
                 groupKey = groupkey
                 Meteor.http.call "GET", summaryURLf(bambooID, groupkey),(error,result)->
                     if not(error is null)
-                        console.log error
+                        console.log summaryURLf(bambooID, groupkey) + error
                     else
                         obj = JSON.parse(cleanKeys(result.content))
                         if groupKey is ""
