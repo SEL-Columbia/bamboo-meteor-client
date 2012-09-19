@@ -241,9 +241,7 @@ Meteor.methods(
         # chart based on groupable property
         # create individual divs
         # because nvd3 doesn't display tooltip box well
-        gv = dataElement.groupVal
-        if "/" in gv
-            gv = gv.replace(/\//,'')
+        gv = cleanBadChar(dataElement.groupVal)
         $(div).append('<div id="' + div.id + '_' + gv\
             + '" class="individual_graph span1"></div>')
         individual_div = $("#" + div.id + "_" + gv).get(0)

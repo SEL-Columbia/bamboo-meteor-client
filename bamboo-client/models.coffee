@@ -20,5 +20,12 @@ cleanKeys=(str)->
     str.replace /\"([^\"]*)\"\:/g, (fstr)->
         fstr.replace(/\./g, "_")
 
+cleanBadChar = (str) ->
+    for elem in BAD_CHARACTERS
+        if elem in str
+            str = str.replace(elem,"")
+    return str
+    
 ######## CONSTANTS #######
 CARDINAL_LIMIT = 30
+BAD_CHARACTERS = "'/.,<>[]{}"
