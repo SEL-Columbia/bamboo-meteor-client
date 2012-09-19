@@ -8,7 +8,7 @@ bambooURL = 'http://bamboo.io'
 datasetsURL = bambooURL + '/datasets'
 #TODO: change select to dynamic
 summaryURLf = (id,group) -> datasetsURL + '/' + id + '/summary' +
-    '?select=all' + if group then '?group=' + group else ''
+    '?select=all' + if group then '&group=' + group else ''
 
 schemaURLf = (id) -> datasetsURL + '/' + id + '/info'
 
