@@ -3,11 +3,12 @@ require = __meteor_bootstrap__.require
 request = require 'request'
 #bambooURL = 'http://localhost:8080'
 #bambooURL = 'http://bamboo.modilabs.org/'
-bambooURL = 'http://bamboo.io/'
+bambooURL = 'http://bamboo.io'
 #bambooURL = 'http://starscream.modilabs.org:8080/'
 datasetsURL = bambooURL + '/datasets'
+#TODO: change select to dynamic
 summaryURLf = (id,group) -> datasetsURL + '/' + id + '/summary' +
-    if group then '?group=' + group else ''
+    '?select=all' + if group then '&group=' + group else ''
 
 schemaURLf = (id) -> datasetsURL + '/' + id + '/info'
 
@@ -26,10 +27,42 @@ Meteor.publish "summaries", (url,group, view)->
         groupKey:group
         name:view
 
+Meteor.publish "charts", (url,user)->
+    Charts.find
+        url:url
+        user:user
+
             
 #########METHODS################################
 #Note: methods can live anywhere, regardless of server or client
 Meteor.methods(
+
+    insert_chart: (obj)->
+        [url,user,field,group,item_list] = obj
+        chart =
+            url:url
+            user:user
+            field:field
+            group:group
+            summary:item_list
+        if not Charts.findOne(chart)
+            console.log "user: ", user, " added charts of", field, group
+            Fiber(->
+                Charts.insert(chart)
+            ).run()
+
+    remove_chart: (obj)->
+        [url,user,field,group] = obj
+        chart =
+            url:url
+            user:user
+            field:field
+            group:group
+        if Charts.findOne(chart)
+            console.log "user: ", user, " remove charts of", field, group
+            Fiber(->
+                Charts.remove(chart)
+            ).run()
 
     register_dataset: (url) ->
         if (url is null) or (url is "")
@@ -73,7 +106,8 @@ Meteor.methods(
     insert_schema: (datasetURL) ->
         dataset = Datasets.findOne(url: datasetURL)
         if !(dataset)
-            console.log "no dataset yet, get your schema dataset first"
+            msg = "no dataset yet, get your schema dataset first"
+            throw new Meteor.Error 404,msg
         else
             datasetID = dataset._id
             bambooID = dataset.bambooID
@@ -84,8 +118,11 @@ Meteor.methods(
                     " and bambooID " + bambooID + " is already cached")
             else
                 Meteor.http.call "GET", schemaURLf(bambooID), (error, result)->
+                    #TODO: delete this consolelog
+                    console.log schemaURLf(bambooID)
                     if not(error is null)
                         console.log error
+                        throw new Meteor.Error 404, errormsg
                     else
                         obj = JSON.parse(cleanKeys(result.content))
                         updateTime = obj['updated_at']
@@ -117,7 +154,7 @@ Meteor.methods(
                 groupKey = groupkey
                 Meteor.http.call "GET", summaryURLf(bambooID, groupkey),(error,result)->
                     if not(error is null)
-                        console.log error
+                        console.log summaryURLf(bambooID, groupkey) + error
                     else
                         obj = JSON.parse(cleanKeys(result.content))
                         if groupKey is ""
@@ -129,7 +166,7 @@ Meteor.methods(
                                     name:field
                                     datasetID: datasetID
                                     datasetURL: datasetURL
-                                Fiber( -> Summaries.insert res).run()
+                                Fiber( -> upsert(Summaries, res)).run()
                         else
                             if obj["error"]
                                 console.log "error on group_by: "+obj['error']
@@ -145,7 +182,6 @@ Meteor.methods(
                                                 datasetID: datasetID
                                                 datasetURL: datasetURL
                                             Fiber( -> Summaries.insert res).run()
-
     summarized_by_total_non_recurse:(obj)->
         [datasetURL, groupkey] = obj
         dataset = Datasets.findOne(url: datasetURL)

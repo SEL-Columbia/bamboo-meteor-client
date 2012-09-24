@@ -260,19 +260,24 @@ barchart= (dataElement, div, min, max)->
         .call(y_axis)
                 
 boxplot= (dataElement, div, min, max)->
-    console.log "box plot a a a enter"
     name = dataElement.name
     data = dataElement.data
+    if (dataElement.groupKey is "") and (dataElement.groupVal is "")
+        title = name + " (" + data.count + ")"
+    else
+        title = dataElement.groupKey + " : " + dataElement.groupVal + " (" + data.count + ")"
     if data.count is 1
         console.log "data.count is one"
         display_name = dataElement.groupVal
         display_value = dataElement.data.min
         dataElement.data = {}
         dataElement.data[display_name]=display_value
-        return nvd3BarChart(dataElement, div)
+        return nvd3BarChart(dataElement, div,0, max)
     
 
-    y_padding = 20
+    y_padding_1 = 30
+    y_padding_2 = 20
+    y_padding = y_padding_1+y_padding_2
     x_padding = 20
     font = 10
     display = ['min','25%','50%','75%','max']
@@ -282,30 +287,44 @@ boxplot= (dataElement, div, min, max)->
 
     console.log div
     svg = d3.select(div)
-            .append('svg:svg')
+            .append('svg')
             .attr('class', 'boxPlotSVG')
             
     y_scale = d3.scale.linear()
 		        .domain([min, max])
-		        .range([height-y_padding, y_padding])
+		        .range([height-y_padding_1, y_padding])
 
     y_axis = d3.svg.axis()
                 .scale(y_scale)
                 .orient("left")
                 .ticks(5)
 
+    #add the title
+    svg.append("text")
+        .text(title)
+        .attr("x", width/3)
+        .attr("y", y_padding_1/2)
+        .attr("font-family", "Helvetica")
+        .attr("font-size", "15px")
+        .attr("font-weight", "bold")
+        .attr("class","boxplot_title")
+        .attr("fill", "black")
+
+
+    #y_axis label
     svg.append("text")
         .text(name)
         .attr("x", "0")
-        .attr("y", y_padding/2)
+        .attr("y", (y_padding_1+y_padding_2/2) )
         .attr("font-family", "Monospace")
         .attr("font-size", "15px")
         .attr("fill", "black")
 
+    #name of the variable
     svg.append("text")
         .text(dataElement.groupVal)
         .attr('x', width/3)
-        .attr('y', height)
+        .attr('y', height-y_padding_1/2)
         .attr("font-family", "Monospace")
         .attr("font-size", 15 + "px")
         .attr("fill", "black")
@@ -324,61 +343,77 @@ boxplot= (dataElement, div, min, max)->
         .attr("font-size", font.toString()+"px")
         .attr("fill","black")
 
+    # red body of boxplot
+    svg.append("rect")
+        .attr("x", width / 3)
+        .attr("y", y_scale(data["75%"]))
+        .attr("width", width / 3)
+        .attr("height", y_scale(data["25%"]) - y_scale(data["75%"]))
+        .style("fill", "rgba(250, 128, 114, 0.7)")
+    
+    # black line -- first quartile marker
     svg.append("line")
-        .style("stroke", "rgba(46, 139, 87, 0.7)")
-        .style("stroke-width", "5px")
-        .attr("x1", width / 6)
-        .attr("y1", y_scale(data["50%"]))
-        .attr("x2", width / 6 * 5)
-        .attr("y2", y_scale(data["50%"]))
-
-    svg.append("line")
-        .style("stroke", "black")
+        .style("stroke", "grey")
         .style("stroke-width", "4px")
-        .attr("x1", width / 4)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data["25%"]))
-        .attr("x2", width / 4 * 3)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data["25%"]))
 
+    # black line -- third quartile marker
     svg.append("line")
-        .style("stroke", "black")
+        .style("stroke", "grey")
         .style("stroke-width", "4px")
-        .attr("x1", width / 4)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data["75%"]))
-        .attr("x2", width / 4 * 3)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data["75%"])) 
     
+    # black line -- from min to first quartile
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "3px")
         .attr("x1", width / 2)
         .attr("y1", y_scale(data.min))
         .attr("x2", width / 2)
+        .attr("y2", y_scale(data["25%"]))
+
+    # black line -- from third quartile to max
+    svg.append("line")
+        .style("stroke", "black")
+        .style("stroke-width", "3px")
+        .attr("x1", width / 2)
+        .attr("y1", y_scale(data["75%"]))
+        .attr("x2", width / 2)
         .attr("y2", y_scale(data.max))
 
+    # black line -- min marker
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "1px")
-        .attr("x1", width / 6 * 2)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data.min))
-        .attr("x2", width / 6 * 4)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data.min))
    
+    # black line -- max marker
     svg.append("line")
         .style("stroke", "black")
         .style("stroke-width", "1px")
-        .attr("x1", width / 6 * 2)
+        .attr("x1", width * (1/3))
         .attr("y1", y_scale(data.max))
-        .attr("x2", width / 6 * 4)
+        .attr("x2", width * (2/3))
         .attr("y2", y_scale(data.max))
-
-    svg.append("rect")
-        .attr("x", width / 4)
-        .attr("y", y_scale(data["75%"]))
-        .attr("width", width / 2)
-        .attr("height", y_scale(data["25%"]) - y_scale(data["75%"]))
-        .style("fill", "rgba(250, 128, 114, 0.7)")
     
+    # green line -- median marker
+    svg.append("line")
+        .style("stroke", "rgb(46, 139, 87)")
+        .style("stroke-width", "2px")
+        .attr("x1", width * (1/4))
+        .attr("y1", y_scale(data["50%"]))
+        .attr("x2", width * (3/4))
+        .attr("y2", y_scale(data["50%"]))
+
     svg.append("g")
         .attr("transform", "translate(" + width / 6  + ", 0)")
         .attr("fill", "none")
