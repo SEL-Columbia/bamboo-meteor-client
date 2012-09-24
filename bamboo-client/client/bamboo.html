@@ -10,7 +10,7 @@
     <div class="mainbody">
         {{> processing}}
         {{> body_render}}
-        <div id="d3select"></div>
+        {{> powered-by}}
     </div>
 </body>
 
@@ -20,11 +20,26 @@
             
 <template name="body_render">
 {{#if show}}
-    {{> introduction}}
-    <div class="graph_area">
+    <div id="graph_panel">
     </div>
-    {{> control_panel}}
+    <div class="row" id="waiting_graph" style="display:none">
+        <div class="well span8 offset1">
+            {{> waiting_graph}}
+        </div>
+    </div>
+    <div class="graph_panel">
+        {{> control_panel}}
+    </div>
+    {{> add_button}}
 {{/if}}
+</template>
+
+<template name="add_button">
+<div class="row">
+<div class="btn btn-large offset7 span2" id="addNewGraphBtn">
+    <h3>Add a New Chart</h3>
+</div>
+</div>
 </template>
             
 <template name="graphing_block">
@@ -35,22 +50,6 @@
 
 <template name="url_entry">
     {{#if current_dataset_url}}
-    <div class='navbar navbar-fixed-top url'>
-        <div class="navbar-inner">
-            <div class="container">
-                <div class="pull-left"> <a class="brand" href="http://bamboo.io/"><b> Bamboo.io</b> </a>
-                    <img class="logoImg" src="logo.svg"/>  
-                </div>
-                <div class="pull-right">
-                    <input id="dataSourceURL" type="text"
-                            value="{{current_dataset_url}}"></input>
-                    <div class="btn" id="submitURL">
-                        Submit
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     {{else}} 
 
     <div class = 'logo_bamboo'>
@@ -75,97 +74,114 @@
 </template>
 
 <template name="introduction">
+<div class="row">
 <div class="well span8 offset1">
-    <div class="page-header"> 
-        <h3> Introducion about Your File </h3> 
-    </div>
-    <p><b>You</b> are accessing the dataset from <a href="{{url}}"> {{url}}</a>.</p> 
-    <p><b>{{num_cols}} view fields</b> in the dataset you can choose to chart : </p>
-    {{#if show_all}}
-        <p>
-        {{#each schema}}
-        <a href="http://www.google.com?id={{label}}">{{label}}</a>
-        ,&nbsp&nbsp&nbsp&nbsp
-        {{/each}}
-        </p>
-        {{#if long}}
+    <div class="row">
+        {{#if show_field}}
             <div class="btn pull-right" id="hideBtn">
-                hide
+                Hide viewable fields
+            </div>
+        {{else}}
+            <div class="btn pull-right" id="moreBtn">
+            Show viewable fields      
             </div>
         {{/if}}
-    {{else}}
-        <p> show 5 entries, or click the button to show all </p>
+    </div>
+
+    {{#if show_field}}
+    <p><b>{{num_cols}} viewable fields</b></p>
         <p>
-        {{#each schema_less}}
-        <a href="http://www.google.com?id={{label}}"> {{label}} {{simpletype}} </a>
-        ,&nbsp&nbsp&nbsp&nbsp
+        {{#each schema}}
+        {{label}},&nbsp&nbsp&nbsp&nbsp
         {{/each}}
         </p>
-        <div class="btn pull-right" id="moreBtn">
-            more      
-        </div>
+        <p> * denotes groupable field.</p>
     {{/if}}
-    <p> ---- : Field with * is groupable field.</p>
+    </p>
+</div>
 </div>
 </template>
 
 <template name="control_panel">
-<div class="well span8 offset1">
-    {{#if active}}
-            <div class="page-header">
-                <h3>Graphing Control Panel</h3>
-            </div>
-            <div class="row offset1">
-                <b>View</b>
-                {{chosen}}
-                <select class="chosen" id="view" >
-                    {{#each fields}}
-                        <option>{{this}}</option>
-                    {{/each}}
-                </select>
-                <b>Group by</b>
-                <select data-placeholder="choose a group" class="chosen" id="group-by">
-                    <option></option>
-                    {{#each groups}}
-                        <option>{{this}}</option>
-                    {{/each}}
-                </select>
-                Generate
-                {{num_graph}}
-                graphs
-                <div class="btn pull-right" id="chartBtn">
-                    Chart        
+<div class="row">
+    {{# if first_graph}}
+    <div class="well span8 offset1" id="control_panel" >
+    {{else}}
+    <div class="well span8 offset1" id="control_panel" style="display:none">
+    {{/if}}
+
+        <div class="controls">
+            <div id="control_logic">
+                {{#if first_graph}}
+                    {{toggle_down}}
+                {{else}}
+                    {{toggle}}
+                {{/if}}
+                <div id="chart_control">
+                    <div class="pointer closeBtn pull-right">
+                        <i class="icon-remove"></i>
+                    </div>
+                    <div class="page-header">
+                        <h3>Create a New Chart</h3>
+                    </div>
+                    <div class="row offset1">
+                        <p>
+                            <b>View</b>
+                            {{chosen}}
+                            <select class="chosen" id="view" >
+                                {{#each fields}}
+                                    <option>{{this}}</option>
+                                {{/each}}
+                            </select>
+                            <b>Group by</b>
+                            <select data-placeholder="choose a group" class="chosen" id="group-by">
+                                <option></option>
+                                {{#each groups}}
+                                    <option>{{this}}</option>
+                                {{/each}}
+                            </select>
+                        </p>
+                        <div class="btn pull-right chartBtn" id="{{number}}">
+                            <h3>Chart</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {{#if waiting}}
-                {{>waiting_graph}}
-                {{charting}}
-            {{/if}}
-    {{else}}
-        <div class="btn btn-large pull-right" id="addNewGraphBtn">
-            <h3>Add a New Graph</h3>
         </div>
-    {{/if}}
+    </div>
 </div>
 </template>
 
 <template name="waiting_graph">
+<div class="waiting_graph">
     Proccessing the graphs, waiting a split second...
     <img src="drop.gif">
+</div>
 </template>
  
 <template name="graph">
-<div class="well span8 offset1" id="{{field}}_{{group}}_block">
-    <div class="page-header"> 
-        <div class="pull-right" id="{{field}}_{{group}}_btn">
-                <img class="pointer downloadBtn" src="download.svg"></img>
-            &nbsp
-            <img class="pointer deletionBtn" src="deletion.svg"></img>
+<div class="row" id="{{field}}_{{group}}_block">
+    <div class="well span8 offset1">
+        <div class="page-header"> 
+            <div class="pull-right" id="{{field}}_{{group}}_btn">
+                <div class="btn pointer downloadBtn" data-original-title="Download Chart" rel="tooltip"><img src="download-icon.svg" id="download_btn_img"></img></div>
+                <div class="btn pointer deletionBtn" data-original-title="Remove Chart" rel="tooltip">
+                    <i class="icon-remove"></i>
+                </div>
+            </div>
+            <h3 id="graph_title">{{title}}<b>{{field_name}}</b>{{#if group}} grouped by <b>{{group_name}}</b>{{/if}}</h3>
         </div>
-        <h3> {{title}} </h3>
-    </div>
         <div class="d3_graph" id="{{field}}_{{group}}_graph"></div>
+    </div>
 </div>
 </template>
 
 
+<template name="powered-by">
+<div class="powered-by">
+    <div class="powered-text">
+        Powered by <a href="http://bamboo.io">bamboo.io</a>
+    </div>
+</div>
+
+</template>

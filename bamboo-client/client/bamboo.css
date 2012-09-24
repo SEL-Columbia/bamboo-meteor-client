@@ -1,7 +1,9 @@
 /* CSS declarations go here */
 body{
-    background:#CCE89B;
+/*    background:#CCE89B;
+*/    background: rgba(1, 1, 1, 0.01);
 }
+
 input{
     width:300px;
     height:20px;
@@ -11,13 +13,16 @@ input{
 #dataSourceURL{
     margin-top:10px;
 }
+
 #submitURL{
     margin-left:10px;
 }
+
 .url_init{
     position:absolute;
     top:50%;
 }
+
 .logo_bamboo{
     position:absolute;
     top:40%;
@@ -25,15 +30,19 @@ input{
     width:200;
     height:100;
 }
+
 .control{
     margin-top:50px;
 }
+
 .navbar-inner{
     background:grey;
 }
+
 .chosen{
     width:200px;
 }
+
 #chartBtn{
     margin-top:20px;
 }
@@ -58,7 +67,7 @@ input{
     margin-left:20px;
 }
 .mainbody {
-    margin:50px;
+    margin:5px;
 }
 
 .borderset {
@@ -73,15 +82,7 @@ input{
     cursor:pointer;
 }
 
-.deletionBtn {
-    width:20px;
-    height:20px;
-}
 
-.downloadBtn {
-    width:20px;
-    height:20px;
-}
 .brand {
     font-size: 15px;
 }
@@ -95,10 +96,68 @@ input{
 .boxPlotSVG {
     width: 200px;
     height: 300px;
+    display: inline;
 }
 
 .barChartSVG {
-    width: 400px;
-    height: 250px;
+    width: 300px;
+    height: 300px;
+    display: inline;
+}
+.boxplot_title {
+    font-family: "Helvetica";
+    font-size: 15px;
+    font-weight: bold;
 }
 
+#graph_title {
+    font-weight:normal;
+}
+
+#download_btn_img {
+    width: 17px;
+    height: 17px;
+    opacity:0.5;
+    margin-top: -7px;
+}
+
+.individual_graph {
+    width: 320px;
+    height: 270px;
+}
+
+.nvd3 .nv-axis line {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: 0;
+  shape-rendering: crispEdges;
+}
+
+#control_logic {
+    display:none;
+}
+
+.powered-by {
+    width: 145px;
+    height: 30px;
+    background-color:#E3E1E2;
+    opacity: 0.75;
+    position: fixed;
+    bottom: 0px;
+    right: 10px;
+}
+
+.powered-by a{
+    font-weight: bold;
+    COLOR:#000;
+}
+
+.powered-by .powered-text {
+    margin-left:10px;
+    margin-top:5px;
+    font-size:12px;
+}
+
+.icon-remove {
+    opacity:0.5;
+}
