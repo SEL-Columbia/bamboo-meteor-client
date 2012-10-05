@@ -10,6 +10,7 @@ Install meteor and packages:
 
 run with meteor:
 
+    NOTE: the current version of compatible meteor is v.0.3.8
     if you are running Mac, Ubuntu, Debian Centos of Fedora:
         > curl install.meteor.com | /bin/sh
     else:
