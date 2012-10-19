@@ -117,24 +117,32 @@ Meteor.methods(
                 console.log("schema with datasetID " + datasetID +
                     " and bambooID " + bambooID + " is already cached")
             else
-                Meteor.http.call "GET", schemaURLf(bambooID), (error, result)->
-                    #TODO: delete this consolelog
-                    console.log schemaURLf(bambooID)
-                    if not(error is null)
-                        console.log error
-                        throw new Meteor.Error 404, errormsg
-                    else
-                        obj = JSON.parse(cleanKeys(result.content))
-                        updateTime = obj['updated_at']
-                        createTime = obj['created_at']
-                        schema = obj['schema']
-                        res =
-                            updateTime : updateTime
-                            createTime : createTime
-                            schema : schema
-                            datasetID : datasetID
-                            datasetURL : datasetURL
-                        Fiber( -> Schemas.insert res).run()
+                #check schema first, as of oct 19 bamboo does not return
+                #info/schema object immediately
+
+                schemaInterval = Meteor.setInterval(->
+                    Meteor.http.call "GET", schemaURLf(bambooID), (error, result)->
+                        if not(error is null)
+                            console.log error
+                            throw new Meteor.Error 404, errormsg
+                        else
+                            obj = JSON.parse(cleanKeys(result.content))
+                            schema = obj['schema']
+                            if schema isnt null
+                                clearInterval(schemaInterval)
+                                updateTime = obj['updated_at']
+                                createTime = obj['created_at']
+                                res =
+                                    updateTime : updateTime
+                                    createTime : createTime
+                                    schema : schema
+                                    datasetID : datasetID
+                                    datasetURL : datasetURL
+                                Fiber( -> Schemas.insert res).run()
+                ,500)
+                ""
+
+
 
     summarize_by_group: (obj) ->
         # tease out individual summary objects from bamboo output + store
