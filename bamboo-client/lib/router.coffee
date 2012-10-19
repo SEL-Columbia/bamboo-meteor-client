@@ -2,24 +2,24 @@
 if Meteor.is_client
     URLRouter = Backbone.Router.extend
         routes:
-            "?user=*user&&?csvFile=*url": "persistent_chart"
-            "*url": "default_url"
+            "?user=*user&&?bambooID=*bambooID": "persistent_chart"
+            "*bambooID": "default_id"
         ,
-        persistent_chart: (user, url)->
-            if not (url is "") and not (url is undefined) and not (user is undefined)
-                if Session.get('currentDatasetURL')
+        persistent_chart: (user, bambooID)->
+            if not (bambooID is "") and not (bambooID is undefined) and not (user is undefined)
+                if Session.get('currentDatasetID')
                     keys = Session.keys
                     for item of keys
                         Session.set(item, false)
-                Session.set('currentDatasetURL', url)
+                Session.set('currentDatasetID', bambooID)
                 Session.set('currentUser', user)
                 console.log "caching server side.."
-                Meteor.call('register_dataset', url, (error, result)->
+                Meteor.call('register_dataset_id', bambooID, (error, result)->
                     if error
                         alert error.reason
                     interval = setInterval(->
-                        if Schemas.findOne(datasetURL: url)
-                            Meteor.call("get_fields", url)
+                        if Schemas.findOne({bambooID:bambooID})
+                            Meteor.call("get_fields", bambooID)
                             clearInterval(interval)
                     ,300)
                 )
@@ -37,7 +37,7 @@ if Meteor.is_client
                         user:user
                     .fetch()
                     for chart in previousCharts
-                        Meteor.call('summarize_by_group', [url, chart.group])
+                        Meteor.call('summarize_by_group_id', [bambooID, chart.group])
 
                         Session.set(chart.field + '_' + chart.group, true)
                         #Session.set('currentView', chart.field)
@@ -67,31 +67,31 @@ if Meteor.is_client
             , 1000)
 
         ,
-        default_url: (url)->
-            if not(url is "") and not(url is undefined)
-                if Session.get('currentDatasetURL')
+        default_id: (bambooID)->
+            if not(bambooID is "") and not(bambooID is undefined)
+                if Session.get('currentDatasetID')
                     keys = Session.keys
                     for item of keys
                         Session.set(item, false)
-                Session.set('currentDatasetURL', url)
+                Session.set('currentDatasetID', bambooID)
                 #Meteor.call('chosen')
                 console.log "caching server side.."
                 #todo: add async to serize register & get_fields
-                Meteor.call('register_dataset', url, (error, result)->
+                Meteor.call('register_dataset_id', bambooID, (error, result)->
                     if error
                         alert error.reason
                     interval = setInterval(->
                         #Meteor.call("get_fields", url)
                         #if Session.get('fields')
-                        if Schemas.findOne(datasetURL: url)
+                        if Schemas.findOne(bambooID: bambooID)
                             console.log "booya"
-                            Meteor.call("get_fields", url)
+                            Meteor.call("get_fields", bambooID)
                             clearInterval(interval)
                     ,300)
                 )
             else
                 console.log "already cached server side.."
-                Meteor.call("get_fields",url)
+                Meteor.call("get_fields",bambooID)
                 
     app_router = new URLRouter
     Backbone.history.start()

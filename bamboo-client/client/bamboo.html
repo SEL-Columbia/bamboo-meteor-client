@@ -49,14 +49,14 @@
 </template>
 
 <template name="url_entry">
-    {{#if current_dataset_url}}
+    {{#if current_dataset_bambooID}}
     {{else}} 
 
     <div class = 'logo_bamboo'>
     </div>   
 
     <div class ='url_init span6 offset3'>
-        <input id="dataSourceURL" type="text" value="{{constants.defaultURL}}"></input>
+        <input id="dataSourceID" type="text" value="{{constants.bambooID}}"></input>
         <div class="btn" id="submitURL">
             Submit        
         </div>

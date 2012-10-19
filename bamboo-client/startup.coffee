@@ -2,18 +2,19 @@ root = global ? window
 constants =
     defaultURL : 'https://www.dropbox.com/s/0m8smn04oti92gr/sample_dataset_school_survey.csv?dl=1'
     #defaultURL : 'https://dl.dropbox.com/s/5mu9x13upanqpgy/file.csv?dl=1'
+    bambooID : 'd42c713d958e40149484d6683829ec62'
 Meteor.startup ->
     if root.Meteor.is_client
         Meteor.autosubscribe ->
-            url = Session.get("currentDatasetURL")
+            bambooID = Session.get("currentDatasetID")
             user = Session.get("currentUser")
             group = Session.get("currentGroup")
             view = Session.get("currentView")
-            Meteor.subscribe "datasets", url
-            Meteor.subscribe "schemas", url
-            Meteor.subscribe "summaries", url, group, view
+            Meteor.subscribe "datasets", bambooID
+            Meteor.subscribe "schemas", bambooID
+            Meteor.subscribe "summaries", bambooID, group, view
             if user
-                Meteor.subscribe "charts", url, user
+                Meteor.subscribe "charts", bambooID, user
             return
         Meteor.defer(->
             $('.chosen').chosen()

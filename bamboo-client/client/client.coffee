@@ -11,25 +11,25 @@ if root.Meteor.is_client
     #every function can be accessed by the template it is defined under
     ##################BODY RENDER#####################
     root.Template.body_render.show =->
-        Session.get('currentDatasetURL') and Session.get('fields')
+        Session.get('currentDatasetID') and Session.get('fields')
 
     ###################URL-Entry###########################
     root.Template.url_entry.events = "click .btn": ->
-        Backbone.history.navigate($('#dataSourceURL').val(), true)
+        Backbone.history.navigate($('#dataSourceID').val(), true)
 
-    root.Template.url_entry.current_dataset_url = ->
-        Session.get('currentDatasetURL')
+    root.Template.url_entry.current_dataset_bambooID = ->
+        Session.get('currentDatasetID')
 
     ####################PROCESSING######################
     root.Template.processing.ready =->
-        Session.get('currentDatasetURL') and not Session.get('fields')
+        Session.get('currentDatasetID') and not Session.get('fields')
 
     #################INTRODUCTION###########################
     root.Template.introduction.num_cols =->
         Session.get('fields').length
 
-    root.Template.introduction.url =->
-        Session.get('currentDatasetURL')
+    root.Template.introduction.bambooID =->
+        Session.get('currentDatasetID')
 
     root.Template.introduction.schema =->
         schema = Session.get('schema')
@@ -110,8 +110,8 @@ if root.Meteor.is_client
                 waiting_graph.hide()
                 return
 
-            url = Session.get('currentDatasetURL')
-            Meteor.call("summarize_by_group",[url,group])
+            bambooID = Session.get('currentDatasetID')
+            Meteor.call("summarize_by_group_id",[bambooID,group])
             #Meteor.call("summarized_by_total_non_recurse",[url,group])
             Session.set('currentGroup', group)
             Session.set('currentView', view_field)
@@ -141,9 +141,10 @@ if root.Meteor.is_client
                         waiting_graph.hide()
                         $('#graph_panel').append(frag)
                         $('[rel=tooltip]').tooltip()
-                        url = Session.get("currentDatasetURL")
+                        url = Session.get("currentDatasetURL") ? "none"
+                        id = Session.get("currentDatasetID")
                         user = Session.get("currentUser")
-                        Meteor.call("insert_chart",[url,user,view_field,group,summary])
+                        Meteor.call("insert_chart",[url,id,user,view_field,group,summary])
                         Meteor.call('field_charting', view_field, group)
                         clearInterval(fieldInterval)
                 ,1000)
@@ -152,13 +153,14 @@ if root.Meteor.is_client
     #########GRAPH###############################
     root.Template.graph.events =
         "click .deletionBtn": ->
-            url = Session.get("currentDatasetURL")
+            url = Session.get("currentDatasetURL") ? "none"
+            id = Session.get("currentDatasetID")
             user = Session.get("currentUser")
             field = this.field
             group = this.group
             divstr = '#'+field+'_'+group+'_block'
             Session.set(field+'_'+group, false)
-            Meteor.call("remove_chart",[url, user, field, group])
+            Meteor.call("remove_chart",[url, id, user, field, group])
             $(divstr).remove()
             $('.tooltip').remove()
         "click .downloadBtn": ->
@@ -254,13 +256,11 @@ Meteor.methods(
             boxplot(dataElement,individual_div,min,max)
 
     field_list_charting: (field, group, item_list) ->
-        url = Session.get("currentDatasetURL")
-        user = Session.get("currentUser")
         #group = Session.get("currentGroup") ? "" #some fallback
         #field = Session.get("currentView")
         groupable = Session.get("groupable_fields")
-
         div = $("#" + field + "_" + group + "_graph").get(0)
+
         max_arr = item_list.map (item)->
             if item.name in groupable
                 maxing(item.data)
@@ -279,16 +279,17 @@ Meteor.methods(
 
 
     field_charting: (field, group) ->
-        url = Session.get("currentDatasetURL")
+        bambooID = Session.get("currentDatasetID")
         user = Session.get("currentUser")
         #group = Session.get("currentGroup") ? "" #some fallback
         #field = Session.get("currentView")
         groupable = Session.get("groupable_fields")
         item_list = Summaries.find
-            datasetURL: url
+            bambooID:bambooID
             groupKey: group
             name: field
         .fetch()
+        console.log item_list
 
         div = $("#" + field + "_" + group + "_graph").get(0)
         max_arr = item_list.map (item)->
@@ -308,10 +309,10 @@ Meteor.methods(
 
 
 
-    get_fields:(url)->
+    get_fields:(bambooID)->
         fin = []
         schema_dataset = Schemas.findOne
-            datasetURL: url
+            bambooID:bambooID
         if schema_dataset
             names = []
             schema = schema_dataset['schema']
