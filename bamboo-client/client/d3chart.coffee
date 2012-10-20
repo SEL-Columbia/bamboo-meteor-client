@@ -1,31 +1,3 @@
-mock_element =
-    name:"birthrate"
-    groupVal:"sexywomen"
-    groupKey:"attractiveness"
-    datasetURL:"http://google.com"
-    data:
-        blonde:3
-        brunette:5
-        redhead:18
-        ariana:10
-        peter:28
-
-
-mock_element_2 =
-    name:"birthrate"
-    groupVal:"sexywomen"
-    groupKey:"attractiveness"
-    datasetURL:"http://google.com"
-    data:
-        count:14
-        min:10
-        max:20
-        "25%":12
-        "50%":15
-        "75%":19
-        std: 1.17
-        mean:16
-
 #it will take a dataset object and reder svg graph out of it
 data_massage = (data)->
     massaged = []
@@ -302,7 +274,7 @@ boxplot= (dataElement, div, min, max)->
     #add the title
     svg.append("text")
         .text(title)
-        .attr("x", width/3)
+        .attr("x", 0)
         .attr("y", y_padding_1/2)
         .attr("font-family", "Helvetica")
         .attr("font-size", "15px")

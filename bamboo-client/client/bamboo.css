@@ -123,7 +123,7 @@ input{
 
 .individual_graph {
     width: 320px;
-    height: 270px;
+    height: 320px;
 }
 
 .nvd3 .nv-axis line {
@@ -160,4 +160,8 @@ input{
 
 .icon-remove {
     opacity:0.5;
+}
+
+.arindam_table {
+    margin-left:-10px;
 }

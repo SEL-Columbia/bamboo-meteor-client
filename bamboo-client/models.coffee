@@ -27,5 +27,5 @@ cleanBadChar = (str) ->
     return str
     
 ######## CONSTANTS #######
-CARDINAL_LIMIT = 30
+CARDINAL_LIMIT = 1000
 BAD_CHARACTERS = "'/.,<>[]{}"

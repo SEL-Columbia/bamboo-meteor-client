@@ -20,10 +20,11 @@
             
 <template name="body_render">
 {{#if show}}
+    {{> introduction}}
     <div id="graph_panel">
     </div>
     <div class="row" id="waiting_graph" style="display:none">
-        <div class="well span8 offset1">
+        <div class="well span11 offset1">
             {{> waiting_graph}}
         </div>
     </div>
@@ -43,7 +44,7 @@
 </template>
             
 <template name="graphing_block">
-    <div class="well span8 offset1">
+    <div class="well span10 offset1">
         Graphs:
     </div>
 </template>
@@ -66,7 +67,7 @@
 
 <template name="processing">
 {{#if ready}}
-    <div class="well span8 offset1">
+    <div class="well span10 offset1">
         <h1>Preparing your dataset, just a split second..</h1>
     <img src="drop.gif">
     </div>
@@ -76,28 +77,8 @@
 <template name="introduction">
 <div class="row">
 <div class="well span8 offset1">
-    <div class="row">
-        {{#if show_field}}
-            <div class="btn pull-right" id="hideBtn">
-                Hide viewable fields
-            </div>
-        {{else}}
-            <div class="btn pull-right" id="moreBtn">
-            Show viewable fields      
-            </div>
-        {{/if}}
-    </div>
+    {{> arindam_table}}
 
-    {{#if show_field}}
-    <p><b>{{num_cols}} viewable fields</b></p>
-        <p>
-        {{#each schema}}
-        {{label}},&nbsp&nbsp&nbsp&nbsp
-        {{/each}}
-        </p>
-        <p> * denotes groupable field.</p>
-    {{/if}}
-    </p>
 </div>
 </div>
 </template>
@@ -161,7 +142,7 @@
  
 <template name="graph">
 <div class="row" id="{{field}}_{{group}}_block">
-    <div class="well span8 offset1">
+    <div class="well span11 offset1">
         <div class="page-header"> 
             <div class="pull-right" id="{{field}}_{{group}}_btn">
                 <div class="btn pointer downloadBtn" data-original-title="Download Chart" rel="tooltip"><img src="download-icon.svg" id="download_btn_img"></img></div>

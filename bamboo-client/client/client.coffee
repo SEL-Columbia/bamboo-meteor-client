@@ -25,33 +25,6 @@ if root.Meteor.is_client
         Session.get('currentDatasetURL') and not Session.get('fields')
 
     #################INTRODUCTION###########################
-    root.Template.introduction.num_cols =->
-        Session.get('fields').length
-
-    root.Template.introduction.url =->
-        Session.get('currentDatasetURL')
-
-    root.Template.introduction.schema =->
-        schema = Session.get('schema')
-        schema_list = _.values schema
-        for item in schema_list
-            if (item.simpletype is "string") and (not item.label.match /.*\*$/)
-                item.label = item.label+"*"
-        schema_list
-
-    root.Template.introduction.schema_less =->
-        schema = Session.get('schema')
-        arr = _.values schema
-        arr.slice(0,5)
-
-    root.Template.introduction.events=
-        "click #moreBtn": ->
-            Session.set('show_field', true)
-        "click #hideBtn": ->
-            Session.set('show_field', false)
-
-    root.Template.introduction.show_field=->
-        Session.get("show_field")
 
 
     #####################Control-Panel##################
