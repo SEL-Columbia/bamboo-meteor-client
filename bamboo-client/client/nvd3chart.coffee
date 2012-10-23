@@ -1,3 +1,52 @@
+
+nvd3StackedBarChart = (item_list, div, min, max) ->
+    # in datasetObj, we'll flip inner keys and outer keys 
+    datasetObj = {}
+    allOuterKeys = _(item_list).pluck('groupVal')
+    allInnerKeys = _(item_list).chain().pluck('data').map((d) -> _.keys(d)).flatten().uniq().value()
+    for ki in allInnerKeys
+        datasetObj[ki] = {}
+        (datasetObj[ki][ko] = 0 for ko in allOuterKeys)
+    for item in item_list
+        _.each(item.data, (val, key) ->
+            datasetObj[key][item.groupVal] = val
+        )
+    # now transform datasetObj (map) to dataset (array); dataset schema = from nvd3
+    dataset = []
+    _.each(datasetObj, (val, key) ->
+        dataset.push
+            key: key
+            values: _.map(val, (val2, key2) ->
+                x: key2
+                y: val2
+            )
+    )
+    # we have the dataset, now ready to graph
+    
+    title = item_list[0].name
+    nv.addGraph( () -> 
+        width = 300
+        height = 250
+        chart = nv.models.multiBarChart()
+            .margin({top: 30, right: 10, bottom:150, left: 60})
+            .rotateLabels(-45)
+
+        svg = d3.select(div)
+            .append("svg")
+            .attr("class", "barChartSVG")
+
+        # show the graph, with a slight animation
+        svg.datum(dataset)
+            .transition().duration(500)
+            .call(chart)
+        #TODO:what does this line do?
+        nv.utils.windowResize(chart.update)
+
+        return chart
+
+        return
+    )
+
 nvd3BarChart = (dataElement, div, min, max) ->
     count = 0
     str = "Bar Chart of " + dataElement.name
