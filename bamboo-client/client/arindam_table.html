@@ -1,0 +1,123 @@
+<template name="arindam_table">
+<div class="row arindam_table">
+    {{#if show_all}}
+        <div class="btn pull-right" id="hideBtn">
+            Less Content
+        </div>
+    {{else}}
+        <div class="btn pull-right" id="moreBtn">
+        Show Full Content  
+        </div>
+    {{/if}}
+
+<table border="1"><tr>
+    <td>
+	{{#if show_all}}
+        {{#each one}}
+        <p><a href="https://topol.cartodb.com/tables/gujarat/embed_map" target="_blank">{{label}} ({{simpletype}})</a></p>
+        {{/each}}
+    {{else}}
+        {{#each schema_lessone}}
+        <p><a href="https://topol.cartodb.com/tables/gujarat/embed_map" target="_blank">{{label}} ({{simpletype}})</a></p>
+        {{/each}}
+    {{/if}}
+    </td>
+    <td>
+	{{#if show_all}}
+        	{{#each two}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lesstwo}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+    	{{/if}}
+	</td><td>
+	{{#if show_all}}
+        	{{#each three}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessthree}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+    	{{/if}}
+	</td><td>
+	{{#if show_all}}
+        	{{#each four}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessfour}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+    	{{/if}}
+	
+		</td><td>
+	{{#if show_all}}
+        	{{#each five}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+        {{#if long}}
+        {{/if}}
+    	{{else}}
+        	{{#each schema_lessfive}}
+        	<p><a href="http://www.w3schools.com/" target="_blank">{{label}} ({{simpletype}})</a></p>
+        	{{/each}}
+    	{{/if}}
+
+
+	</td></tr></table>
+
+<table border="1"><tr><td>
+      <p>Gujarat</p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Gujarat'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Gujarat'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Gujarat'" target="_blank">kwh/ha(summer)</a></p>
+     </td><td>
+      <p>Punjab</p>
+       <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Punjab'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Punjab'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Punjab'" target="_blank">kwh/ha(summer)</a></p>
+      </td><td>
+      <p>Madhya Pradesh</p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Madhya Pradesh'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Madhya Pradesh'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Madhya Pradesh'" target="_blank">kwh/ha(summer)</a></p>
+       </td><td>
+      <p>Rajasthan</p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Rajasthan'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Rajasthan'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Rajasthan'" target="_blank">kwh/ha(summer)</a></p>
+       </td><td>
+      <p>Andhra Pradesh</p>
+ <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Andhra Pradesh'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Andhra Pradesh'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Andhra Pradesh'" target="_blank">kwh/ha(summer)</a></p>
+ </td><td>
+      <p>Karnataka</p>
+ <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Karnataka'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Karnataka'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Karnataka'" target="_blank">kwh/ha(summer)</a></p>
+ </td><td>
+      <p>Haryana</p>
+ <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Haryana'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Haryana'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Haryana'" target="_blank">kwh/ha(summer)</a></p>
+  </td><td>
+      <p>Jharkhand</p>
+ <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhsummer,-9999%20as%20kwhrabi,kwhkharif+FROM+district_level_energy%20where%20name_1%20=%20'Jharkhand'" target="_blank">kwh/ha(kharif)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhsummer,kwhrabi+FROM+district_level_energy%20where%20name_1%20=%20'Jharkhand'" target="_blank">kwh/ha(rabi)</a></p>
+      <p><a href="https://topol.cartodb.com/tables/district_level_energy/embed_map?sql=SELECT+the_geom_webmercator,-9999%20as%20kwhkharif,-9999%20as%20kwhrabi,kwhsummer+FROM+district_level_energy%20where%20name_1%20=%20'Jharkhand'" target="_blank">kwh/ha(summer)</a></p>    
+
+</td></tr>
+</table>
+</div>
+</template>
+
